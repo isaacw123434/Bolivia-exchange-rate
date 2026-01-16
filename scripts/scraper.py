@@ -78,6 +78,27 @@ def get_official_rates(api_key):
         print(f"Error fetching official rates: {e}")
         return None
 
+def get_free_official_rates():
+    # Fallback to free API (no key required)
+    # Docs: https://www.exchangerate-api.com/docs/free
+    url = "https://open.er-api.com/v6/latest/USD"
+
+    try:
+        print(f"Attempting fallback to free API: {url}...")
+        response = requests.get(url, timeout=10)
+
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('result') == 'success':
+                print("Successfully fetched official rates from free API.")
+                return data.get('rates')
+
+        print(f"Failed to fetch from free API. Status: {response.status_code}")
+        return None
+    except Exception as e:
+        print(f"Error fetching free official rates: {e}")
+        return None
+
 def main():
     # Check cache
     if os.path.exists('data/rates.json'):
@@ -103,6 +124,10 @@ def main():
     # Fetch official rates
     api_key = os.environ.get("EXCHANGE_API_KEY")
     official_rates = get_official_rates(api_key)
+
+    if official_rates is None:
+        print("Primary API failed. Attempting fallback...")
+        official_rates = get_free_official_rates()
 
     # Validate Backpacking Currencies
     required_currencies = ['EUR', 'GBP', 'CAD', 'AUD', 'TWD', 'JPY', 'CNY', 'RUB']
