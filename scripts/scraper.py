@@ -70,7 +70,17 @@ def get_official_rates(api_key):
             return data.get('rates')
         else:
             # Handle API specific errors
-            error_message = data.get('message') or data.get('error', {}).get('info') or "Unknown error"
+            error_message = data.get('message')
+            if not error_message:
+                error_data = data.get('error')
+                if isinstance(error_data, dict):
+                    error_message = error_data.get('info')
+                else:
+                    error_message = str(error_data)
+
+            if not error_message:
+                error_message = "Unknown error"
+
             print(f"Failed to fetch official rates. Status: {response.status_code}, Error: {error_message}")
             return None
 
@@ -79,13 +89,16 @@ def get_official_rates(api_key):
         return None
 
 def main():
+    cached_data = None
     # Check cache
     if os.path.exists('data/rates.json'):
         try:
             with open('data/rates.json', 'r') as f:
                 cached_data = json.load(f)
                 timestamp = cached_data.get('timestamp')
-                if timestamp:
+                official_rates_cached = cached_data.get('official_rates')
+
+                if timestamp and official_rates_cached:
                     # 1 day in seconds
                     if (datetime.now().timestamp() - timestamp) < (24 * 3600):
                         print("Using cached rates (less than 1 day old).")
@@ -103,6 +116,11 @@ def main():
     # Fetch official rates
     api_key = os.environ.get("EXCHANGE_API_KEY")
     official_rates = get_official_rates(api_key)
+
+    # If official rates fetch failed, try to use cached version
+    if not official_rates and cached_data and cached_data.get('official_rates'):
+        print("Using cached official rates as new fetch failed.")
+        official_rates = cached_data.get('official_rates')
 
     # Validate Backpacking Currencies
     required_currencies = ['EUR', 'GBP', 'CAD', 'AUD', 'TWD', 'JPY', 'CNY', 'RUB']
