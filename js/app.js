@@ -484,6 +484,7 @@ function updateUI(results) {
     els.resultsList.innerHTML = '';
 
     // Render the rest (skipping the winner)
+    let listHTML = '';
     validResults.slice(1).forEach((res, index) => {
         const isWorst = (res === worst && validResults.length > 1);
         const diff = res.val - best.val;
@@ -515,7 +516,7 @@ function updateUI(results) {
             extraBadge = `<p class="text-xs text-yellow-800/80 dark:text-yellow-200/80">${res.desc}</p>`;
         }
 
-        els.resultsList.innerHTML += `
+        listHTML += `
             <div class="${containerClasses}">
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-full ${iconBg}">
@@ -533,6 +534,7 @@ function updateUI(results) {
             </div>
         `;
     });
+    els.resultsList.innerHTML = listHTML;
 
     // 3. Render Savings Alert
     if (validResults.length > 1) {
