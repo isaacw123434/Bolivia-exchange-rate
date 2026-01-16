@@ -25,6 +25,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Scraper
+        env:
+          EXCHANGE_API_KEY: ${{ secrets.EXCHANGE_API_KEY }}
         run: python scripts/scraper.py
 
       - name: Commit and Push changes
