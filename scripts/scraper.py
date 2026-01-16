@@ -41,23 +41,14 @@ def get_street_rate():
         print(f"Error scraping: {e}")
         return None
 
-def get_official_rates(api_key):
-    if not api_key:
-        print("No Exchange Rate API Key provided.")
-        return None
-
-    # New API endpoint as requested
-    url = "https://api.exchangerateapi.net/v1/latest"
-    params = {
-        "base": "USD"
-    }
-    headers = {
-        "apikey": api_key
-    }
+def get_official_rates(api_key=None):
+    # Using open.er-api.com (based on exchangerate-api.com) which is free and requires no key for base usage
+    # This solves the issue where the previous API key was missing or invalid.
+    url = "https://api.exchangerate-api.com/v4/latest/USD"
 
     try:
         print(f"Fetching official rates from {url}...")
-        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response = requests.get(url, timeout=10)
 
         try:
             data = response.json()
@@ -65,12 +56,14 @@ def get_official_rates(api_key):
             print(f"Failed to parse JSON response. Status: {response.status_code}, Body: {response.text[:100]}...")
             return None
 
-        if response.status_code == 200 and (data.get('success') is True or 'rates' in data):
+        if response.status_code == 200 and 'rates' in data:
             print("Successfully fetched official rates.")
             return data.get('rates')
         else:
             # Handle API specific errors
-            error_message = data.get('message') or data.get('error', {}).get('info') or "Unknown error"
+            error_message = "Unknown error"
+            if isinstance(data, dict):
+                error_message = data.get('message') or data.get('error') or "Unknown error"
             print(f"Failed to fetch official rates. Status: {response.status_code}, Error: {error_message}")
             return None
 
