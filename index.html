@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bolivia Blue Dollar Calculator & Exchange Rate</title>
+<meta name="description" content="Calculate best payment methods in Bolivia. Compare Blue Dollar rates vs Credit Cards & Apps to save money.">
+<meta property="og:title" content="Bolivia Blue Dollar Calculator & Exchange Rate" />
+<meta property="og:description" content="Calculate the best way to pay in Bolivia. Compare the Blue Dollar rate vs Credit Cards vs Money Transfer Apps." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Bolivia Blue Dollar Calculator & Exchange Rate" />
+<meta name="twitter:description" content="Calculate the best way to pay in Bolivia. Compare the Blue Dollar rate vs Credit Cards vs Money Transfer Apps." />
+<link rel="icon" type="image/png" href="/static/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+<link rel="shortcut icon" href="/static/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Bolivia Exchange Rates" />
+<link rel="manifest" href="/static/site.webmanifest" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Bolivia Blue Dollar Calculator",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "A calculator to compare payment methods in Bolivia using the Blue Dollar exchange rate."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "What is the Blue Dollar in Bolivia?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The \"Blue Dollar\" is the unofficial exchange rate for US Dollars in Bolivia. It is typically significantly higher than the official bank rate."
+    }
+  }, {
+    "@type": "Question",
+    "name": "Should I use Credit Card or Cash in Bolivia?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Cash exchanged at the Blue Dollar rate provides the best value. Credit cards charge the official rate, making purchases 20-40% more expensive."
+    }
+  }, {
+    "@type": "Question",
+    "name": "Is it safe to exchange money on the street?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "It is generally safe in busy areas like Avenida Camacho in La Paz. Always count your money and check for watermarks to avoid counterfeits."
+    }
+  }]
+}
+</script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="js/tailwind_config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+      .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased selection:bg-primary/30">
+<div class="relative mx-auto flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 px-4 py-4 backdrop-blur-md">
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Bolivia Blue Dollar Rate & Travel Money Calculator</h1>
+<!-- Home Currency Select moved to Header -->
+<div class="relative flex items-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors group">
+    <label for="home-currency" class="text-xs font-bold text-slate-500 uppercase mr-1 cursor-pointer">Home:</label>
+    <span class="text-xl" id="flag-icon">🇬🇧</span>
+    <select id="home-currency" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10">
+        <option value="GBP">GBP</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="AUD">AUD</option>
+        <option value="CAD">CAD</option>
+        <option value="TWD">TWD</option>
+        <option value="JPY">JPY</option>
+        <option value="CNY">CNY</option>
+        <option value="RUB">RUB</option>
+    </select>
+    <span class="material-symbols-outlined text-sm text-slate-400 absolute right-2 pointer-events-none group-hover:text-slate-600 transition-colors">expand_more</span>
+</div>
+</header>
+
+<main class="flex-1 overflow-y-auto px-4 pb-24 hide-scrollbar space-y-6">
+
+<!-- Introduction -->
+<section class="mt-4 space-y-2">
+  <p class="text-sm text-slate-600 dark:text-slate-300">
+    Welcome to the ultimate <strong>Bolivia Exchange Rate Calculator</strong>. This tool helps travelers and locals find the best way to pay by comparing the official exchange rate against the unofficial "Blue Dollar" rate. Whether you use cash, credit cards, or money transfer apps, our calculator shows you real-time savings instantly.
+  </p>
+</section>
+
+<!-- Section 1: Bill Details -->
+<section class="mt-2 space-y-4">
+<div class="rounded-2xl bg-card-light dark:bg-card-dark p-6 shadow-soft transition-all duration-300">
+<div class="mb-4 flex items-center justify-between">
+<label for="bill-amount" class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bill Total</label>
+
+</div>
+<div class="flex flex-col gap-4">
+<div class="relative flex items-baseline justify-center border-b-2 border-slate-100 dark:border-slate-800 focus-within:border-primary transition-colors pb-2">
+<span class="text-4xl font-bold text-slate-300 mr-2" id="currency-symbol">$</span>
+<input id="bill-amount" aria-label="Bill Total" class="w-full bg-transparent text-center text-5xl font-bold text-slate-900 dark:text-white placeholder-slate-200 focus:outline-none focus:ring-0 p-0" placeholder="0" type="number"/>
+</div>
+<!-- Currency Toggle -->
+<div class="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1.5">
+<label class="group relative flex flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 py-2.5 text-sm font-medium transition-all">
+<input checked="" class="peer sr-only" name="bill_currency" type="radio" value="BOB"/>
+<div class="absolute inset-0 bg-white dark:bg-card-dark shadow-sm opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+<span class="relative z-10 flex items-center gap-2 text-slate-500 peer-checked:text-primary dark:text-slate-400 dark:peer-checked:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">flag</span>
+                                    BOB
+                                </span>
+</label>
+<label class="group relative flex flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 py-2.5 text-sm font-medium transition-all">
+<input class="peer sr-only" name="bill_currency" type="radio" value="USD"/>
+<div class="absolute inset-0 bg-white dark:bg-card-dark shadow-sm opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+<span class="relative z-10 flex items-center gap-2 text-slate-500 peer-checked:text-primary dark:text-slate-400 dark:peer-checked:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">attach_money</span>
+                                    USD
+                                </span>
+</label>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Payment Methods -->
+<section class="mt-4">
+    <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">💳 Payment Methods in Bolivia</h2>
+    <div class="space-y-3">
+        <!-- USD Cash -->
+        <button id="btn-toggle-cash" class="w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 bg-white dark:bg-card-dark border-slate-200 dark:border-slate-700 hover:border-slate-300">
+            <div id="icon-check-cash" class="w-5 h-5 rounded border-2 flex items-center justify-center border-slate-300"></div>
+            <span class="material-symbols-outlined text-slate-400" id="icon-cash">payments</span>
+            <div class="text-left">
+                <div class="font-bold text-slate-800 dark:text-slate-200">USD street exchange</div>
+                <div class="text-xs text-slate-500">Physical USD dollars</div>
+            </div>
+        </button>
+
+        <!-- App -->
+        <button id="btn-toggle-app" class="w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 bg-white dark:bg-card-dark border-slate-200 dark:border-slate-700 hover:border-slate-300">
+             <div id="icon-check-app" class="w-5 h-5 rounded border-2 flex items-center justify-center border-slate-300"></div>
+            <span class="material-symbols-outlined text-slate-400" id="icon-app">smartphone</span>
+            <div class="text-left">
+                <div class="font-bold text-slate-800 dark:text-slate-200">Money Transfer App</div>
+                <div class="text-xs text-slate-500">Wise/Remitly/WU</div>
+            </div>
+        </button>
+
+        <!-- Card -->
+        <button id="btn-toggle-card" class="w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 bg-white dark:bg-card-dark border-slate-200 dark:border-slate-700 hover:border-slate-300">
+             <div id="icon-check-card" class="w-5 h-5 rounded border-2 flex items-center justify-center border-slate-300"></div>
+            <span class="material-symbols-outlined text-slate-400" id="icon-card">credit_card</span>
+            <div class="text-left">
+                <div class="font-bold text-slate-800 dark:text-slate-200">Credit/Debit Card</div>
+                <div class="text-xs text-slate-500">Bank card</div>
+            </div>
+        </button>
+    </div>
+</section>
+
+<!-- Exchange Rates -->
+<section class="mt-2">
+    <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">📊 Current Blue Dollar & Official Rates</h2>
+    <div id="last-updated" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-1">
+        <span class="material-symbols-outlined text-[14px]">update</span>
+        <span>Loading rates...</span>
+    </div>
+
+    <!-- Cash Rates -->
+    <div id="rates-container-cash" class="transition-all duration-300 ease-in-out overflow-hidden rounded-xl bg-blue-50 dark:bg-slate-800/50 p-4 shadow-sm border border-blue-200 dark:border-blue-900">
+        <div class="mb-3 flex items-center gap-2">
+             <span class="material-symbols-outlined text-blue-600">payments</span>
+             <h4 class="text-xs font-bold uppercase text-blue-900 dark:text-blue-100">Street exchange</h4>
+        </div>
+        <div class="space-y-3">
+             <div>
+                <label for="street-exchange-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Street Rate (USD → BOB)</label>
+                <input id="street-exchange-rate" class="w-full border-2 border-blue-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-blue-500 focus:outline-none" type="number" step="0.01"/>
+            </div>
+            <div>
+                 <label for="home-to-usd-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"><span id="label-home-to-usd">Home Currency → USD</span></label>
+                 <input id="home-to-usd-rate" class="w-full border-2 border-blue-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-blue-500 focus:outline-none" type="number" step="0.0001"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Rates -->
+    <div id="rates-container-app" class="transition-all duration-300 ease-in-out overflow-hidden rounded-xl bg-purple-50 dark:bg-slate-800/50 p-4 shadow-sm border border-purple-200 dark:border-purple-900">
+         <div class="mb-3 flex items-center gap-2">
+             <span class="material-symbols-outlined text-purple-600">smartphone</span>
+             <h4 class="text-xs font-bold uppercase text-purple-900 dark:text-purple-100">Transfer App</h4>
+        </div>
+        <div class="space-y-3">
+            <div>
+                 <label for="app-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"><span id="label-app-rate">Transfer App Home → Bob</span></label>
+                 <input id="app-rate" class="w-full border-2 border-purple-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-purple-500 focus:outline-none" type="number" step="0.01"/>
+            </div>
+            <div>
+                 <label for="app-fee" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Transfer Fee (<span id="app-fee-currency">£</span>)</label>
+                 <input id="app-fee" class="w-full border-2 border-purple-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-purple-500 focus:outline-none" type="number" step="0.01"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Rates -->
+     <div id="rates-container-card" class="transition-all duration-300 ease-in-out overflow-hidden rounded-xl bg-green-50 dark:bg-slate-800/50 p-4 shadow-sm border border-green-200 dark:border-green-900">
+        <div class="mb-3 flex items-center gap-2">
+             <span class="material-symbols-outlined text-green-600">credit_card</span>
+             <h4 class="text-xs font-bold uppercase text-green-900 dark:text-green-100">Card</h4>
+        </div>
+        <div class="space-y-3">
+            <div>
+                 <label for="bank-fee-pct" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">International Transaction Fee: <span id="bank-fee-display" class="font-bold">0%</span></label>
+                 <div class="flex items-center gap-3">
+                     <input id="bank-fee-pct" type="range" min="0" max="5" step="0.1" class="flex-1 accent-green-600"/>
+                     <input id="bank-fee-number" aria-label="Bank fee percentage" type="number" min="0" max="5" step="0.1" class="w-16 border-2 border-green-200 rounded p-1 text-sm bg-white dark:bg-card-dark focus:border-green-500 focus:outline-none text-center" />
+                 </div>
+            </div>
+             <div>
+                 <label for="card-bob-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"><span id="label-official-rate">Official Rate (Home → Bob)</span></label>
+                 <input id="card-bob-rate" class="w-full border-2 border-green-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-green-500 focus:outline-none" type="number" step="0.01"/>
+            </div>
+             <div>
+                 <label for="merchant-usd-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Merchant USD Rate (USD → BOB)</label>
+                 <input id="merchant-usd-rate" class="w-full border-2 border-green-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-green-500 focus:outline-none" type="number" step="0.01"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Section 4: Results -->
+<section class="space-y-4 pt-2">
+    <!-- Winner Card -->
+    <div id="winner-card-container"></div>
+    <div class="flex items-center justify-between px-1">
+         <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide">All Options</h3>
+    </div>
+    <!-- Comparison List -->
+    <div id="results-list" class="space-y-3"></div>
+
+    <!-- Savings Alert -->
+    <div id="savings-alert-container"></div>
+
+    <section class="mt-6 space-y-4 border-t border-slate-200 dark:border-slate-800 pt-6">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">local_atm</span>
+                ATM Withdrawal Limits
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
+                Most Bolivian ATMs (like Banco Unión or BNB) have a withdrawal limit of roughly <strong>2,000 - 4,000 BOB per transaction</strong>. You may be charged a fee for every withdrawal, so it is better to take out the maximum amount possible at once.
+            </p>
+        </div>
+
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">account_balance</span>
+                Western Union Hack
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
+                If you run out of USD cash, you can <strong>send money to yourself via Western Union</strong> app and pick it up in Bolivia. Ensure you select "Payout in USD" (if available) or check their specific BOB exchange rate, which is often better than the official bank rate.
+            </p>
+        </div>
+    </section>
+</section>
+
+<!-- FAQ Section -->
+<section class="mt-8 space-y-4 pb-8 border-t border-slate-200 dark:border-slate-800 pt-6">
+    <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Frequently Asked Questions</h2>
+
+    <div class="space-y-4 text-slate-600 dark:text-slate-300">
+        <div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">What is the Blue Dollar in Bolivia?</h3>
+            <p class="text-sm">The "Blue Dollar" is the unofficial exchange rate for US Dollars in Bolivia. Because of currency controls and scarcity of dollars, a parallel market has emerged where the street value of the dollar is significantly higher than what banks offer legally. This means you can get more Bolivianos (BOB) for your USD cash if you exchange it on the street or at specific exchange houses.</p>
+        </div>
+
+        <div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Should I use Credit Card or Cash in Bolivia?</h3>
+            <p class="text-sm">Using cash exchanged at the Blue Dollar rate usually provides the best value. Credit cards will typically charge you the official government exchange rate, and your bank may add foreign transaction fees on top of that. This can make everything 20% to 40% more expensive compared to paying with cash exchanged at the blue rate. Always check the <strong>Bolivia Exchange Rate Calculator</strong> before making large purchases.</p>
+        </div>
+
+        <div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">How to get the best exchange rate in La Paz/Sucre?</h3>
+            <p class="text-sm">To get the best exchange rate, bring crisp, new $100 USD bills. Smaller bills ($20s, $50s) often receive a lower rate. Exchange them at "Casas de Cambio" (Exchange Houses) or with reputable street changers. In La Paz, Avenida Camacho is a popular spot. In Sucre, look near the central market. Avoid exchanging money at the airport as the rates are usually poor.</p>
+        </div>
+
+        <div>
+            <h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Is it safe to exchange money on the street?</h3>
+            <p class="text-sm">Yes, it is generally safe in busy, well-known areas, but using established exchange houses (Casas de Cambio) is recommended for larger amounts and better security. Always be aware of your surroundings when handling cash and <strong>always check for watermarks to spot counterfeit bills</strong> before leaving the counter.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Useful Resources Section -->
+<section class="mt-8 space-y-4 pb-8 border-t border-slate-200 dark:border-slate-800 pt-6">
+    <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">Useful Resources</h2>
+    <div class="space-y-3">
+        <a href="https://dolarbo.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-lg bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors group">
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">currency_exchange</span>
+            <div>
+                <div class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors">DolarBo.com</div>
+                <div class="text-xs text-slate-500">Check current Bolivia Blue Dollar rates</div>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 ml-auto text-sm">open_in_new</span>
+        </a>
+
+        <a href="https://www.mastercard.com/global/en/personal/get-support/convert-currency.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-lg bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors group">
+            <span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">calculate</span>
+            <div>
+                <div class="font-bold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors">MasterCard Currency Converter</div>
+                <div class="text-xs text-slate-500">Official MasterCard exchange rate calculator</div>
+            </div>
+             <span class="material-symbols-outlined text-slate-400 ml-auto text-sm">open_in_new</span>
+        </a>
+    </div>
+</section>
+
+<!-- Footer Disclaimer -->
+<footer class="mt-8 pt-6 pb-2 border-t border-slate-200 dark:border-slate-800 text-center">
+    <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">
+        Rates are estimates for informational purposes only. The 'Blue Dollar' is an unregulated market; rates vary by street corner and negotiator. We are not responsible for financial losses.
+    </p>
+</footer>
+
+</main>
+<!-- Bottom Blur Gradient for better scrolling feel -->
+<div class="pointer-events-none fixed bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent z-40 max-w-md mx-auto"></div>
+</div>
+<script src="js/app.js"></script>
+<script src="js/sw_register.js"></script>
+</body></html>
