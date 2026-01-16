@@ -85,6 +85,18 @@ window.els = {
     labelOfficialRate: document.getElementById('label-official-rate')
 };
 
+// Optimization: Cache number formatters to avoid re-creating them on every render
+const numberFormatters = {};
+const getFormatter = (currency) => {
+    if (!numberFormatters[currency]) {
+        numberFormatters[currency] = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currency
+        });
+    }
+    return numberFormatters[currency];
+};
+
 const FLAGS = {
     GBP: '🇬🇧', USD: '🇺🇸', EUR: '🇪🇺', AUD: '🇦🇺', CAD: '🇨🇦',
     TWD: '🇹🇼', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺'
@@ -456,8 +468,8 @@ function updateUI(results) {
     const worst = validResults[validResults.length - 1];
     const savings = worst.val - best.val;
 
-    // Helper to format money
-    const fmt = (n) => n.toLocaleString('en-US', { style: 'currency', currency: cur });
+    // Helper to format money (optimized)
+    const fmt = (n) => getFormatter(cur).format(n);
 
     // 1. Render Winner Card
     els.winnerCardContainer.innerHTML = `
