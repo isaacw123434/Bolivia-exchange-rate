@@ -41,23 +41,13 @@ def get_street_rate():
         print(f"Error scraping: {e}")
         return None
 
-def get_official_rates(api_key):
-    if not api_key:
-        print("No Exchange Rate API Key provided.")
-        return None
-
-    # New API endpoint as requested
-    url = "https://api.exchangerateapi.net/v1/latest"
-    params = {
-        "base": "USD"
-    }
-    headers = {
-        "apikey": api_key
-    }
+def get_official_rates():
+    # Using open.er-api.com as it is a free public API
+    url = "https://open.er-api.com/v6/latest/USD"
 
     try:
         print(f"Fetching official rates from {url}...")
-        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response = requests.get(url, timeout=10)
 
         try:
             data = response.json()
@@ -65,12 +55,12 @@ def get_official_rates(api_key):
             print(f"Failed to parse JSON response. Status: {response.status_code}, Body: {response.text[:100]}...")
             return None
 
-        if response.status_code == 200 and (data.get('success') is True or 'rates' in data):
+        if response.status_code == 200 and (data.get('result') == 'success' or 'rates' in data):
             print("Successfully fetched official rates.")
             return data.get('rates')
         else:
             # Handle API specific errors
-            error_message = data.get('message') or data.get('error', {}).get('info') or "Unknown error"
+            error_message = data.get('result') or "Unknown error"
             print(f"Failed to fetch official rates. Status: {response.status_code}, Error: {error_message}")
             return None
 
@@ -101,8 +91,7 @@ def main():
         print(f"Successfully scraped rate: {rate}")
 
     # Fetch official rates
-    api_key = os.environ.get("EXCHANGE_API_KEY")
-    official_rates = get_official_rates(api_key)
+    official_rates = get_official_rates()
 
     # Validate Backpacking Currencies
     required_currencies = ['EUR', 'GBP', 'CAD', 'AUD', 'TWD', 'JPY', 'CNY', 'RUB']
