@@ -21,6 +21,35 @@ const DEFAULTS = {
     merchantUsdRate: 6.96
 };
 
+const ICON_PATHS = {
+    "flag": "M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z",
+    "attach_money": "M451-120v-84q-57-10-93.5-43.5T305-332l56-23q17 48 49 71.5t77 23.5q48 0 79-24t31-66q0-44-27.5-68T466-467q-72-23-107.5-61T323-623q0-55 35.5-92t92.5-42v-83h60v83q45 5 77.5 29.5T638-665l-56 24q-14-32-37.5-46.5T483-702q-46 0-73 21t-27 57q0 38 30 61.5T524-514q68 21 100.5 60.5T657-354q0 63-37 101.5T511-203v83h-60Z",
+    "payments": "M540-420q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM220-280q-24.75 0-42.37-17.63Q160-315.25 160-340v-400q0-24.75 17.63-42.38Q195.25-800 220-800h640q24.75 0 42.38 17.62Q920-764.75 920-740v400q0 24.75-17.62 42.37Q884.75-280 860-280H220Zm100-60h440q0-42 29-71t71-29v-200q-42 0-71-29t-29-71H320q0 42-29 71t-71 29v200q42 0 71 29t29 71Zm480 180H100q-24.75 0-42.37-17.63Q40-195.25 40-220v-460h60v460h700v60ZM220-340v-400 400Z",
+    "smartphone": "M260-40q-24.75 0-42.37-17.63Q200-75.25 200-100v-760q0-24 18-42t42-18h438q24.75 0 42.38 17.62Q758-884.75 758-860v150q18 3 30 16.95 12 13.96 12 31.63V-587q0 19-12 33t-30 17v437q0 24.75-17.62 42.37Q722.75-40 698-40H260Zm0-60h438v-760H260v760Zm0 0v-760 760Zm219-620q12 0 21-9t9-21q0-12-9-21t-21-9q-12 0-21 9t-9 21q0 12 9 21t21 9Z",
+    "credit_card": "M880-740v520q0 24-18 42t-42 18H140q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42ZM140-631h680v-109H140v109Zm0 129v282h680v-282H140Zm0 282v-520 520Z",
+    "expand_more": "M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z",
+    "update": "M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z",
+    "local_atm": "M453-274h60v-45h48q15 0 24.5-12t9.5-27v-114.74q0-16.26-9.5-27.76T561-512H425v-69h170v-60h-82v-45h-60v45h-49q-15 0-27 12t-12 28.12v113.76q0 16.12 12 25.62t27 9.5h131v73H365v60h88v45ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z",
+    "account_balance": "M212-241v-339h60v339h-60Zm242 0v-339h60v339h-60ZM80-121v-60h800v60H80Zm608-120v-339h60v339h-60ZM80-640v-53l400-228 400 228v53H80Zm134-60h532-532Zm0 0h532L480-852 214-700Z",
+    "currency_exchange": "M480-40q-112 0-216-66T100-257v137H40v-240h240v60H143q51 77 145.5 138.5T480-100q78 0 147.5-30t121-81.5Q800-263 830-332.5T860-480h60q0 91-34.5 171T791-169q-60 60-140 94.5T480-40Zm-29-153v-54q-45-12-75.5-38.5T324-358l51-17q12 38 42.5 60t69.5 22q40 0 66.5-19.5T580-364q0-33-25-55.5T463-470q-60-25-90-54t-30-78q0-44 30-75t80-38v-51h55v51q38 4 66 24t45 55l-48 23q-15-28-37-42t-52-14q-39 0-61.5 18T398-602q0 32 26 51t84 43q69 29 98 61t29 83q0 25-9 46t-25.5 36Q584-267 560-257.5T506-245v52h-55ZM40-480q0-91 34.5-171T169-791q60-60 140-94.5T480-920q112 0 216 66t164 151v-137h60v240H680v-60h137q-51-77-145-138.5T480-860q-78 0-147.5 30t-121 81.5Q160-697 130-627.5T100-480H40Z",
+    "calculate": "M314-228h50v-88h88v-50h-88v-88h-50v88h-88v50h88v88Zm215-35h201v-49H529v49Zm0-107h201v-50H529v50Zm37-163 61-61 61 61 36-36-61-61 61-61-36-36-61 61-61-61-36 36 61 61-61 61 36 36Zm-325-72h196v-50H241v50Zm-61 485q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm0-600v600-600Z",
+    "open_in_new": "M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z",
+    "check": "M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z",
+    "emoji_events": "M298-120v-60h152v-148q-54-11-96-46.5T296-463q-74-8-125-60t-51-125v-44q0-25 17.5-42.5T180-752h104v-88h392v88h104q25 0 42.5 17.5T840-692v44q0 73-51 125t-125 60q-16 53-58 88.5T510-328v148h152v60H298Zm-14-406v-166H180v44q0 45 29.5 78.5T284-526Zm196 141q57 0 96.5-40t39.5-97v-258H344v258q0 57 39.5 97t96.5 40Zm196-141q45-10 74.5-43.5T780-648v-44H676v166Zm-196-57Z",
+    "savings": "M640-520q17 0 28.5-11.5T680-560q0-17-11.5-28.5T640-600q-17 0-28.5 11.5T600-560q0 17 11.5 28.5T640-520ZM320-620h200v-60H320v60ZM180-120q-34-114-67-227.5T80-580q0-92 64-156t156-64h200q29-38 70.5-59t89.5-21q25 0 42.5 17.5T720-820q0 6-1.5 12t-3.5 11q-4 11-7.5 22.5T702-751l91 91h87v279l-113 37-67 224H480v-80h-80v80H180Zm45-60h115v-80h200v80h115l63-210 102-35v-175h-52L640-728q1-25 6.5-48.5T658-824q-38 10-72 29.5T534-740H300q-66.29 0-113.14 46.86Q140-646.29 140-580q0 103.16 29 201.58Q198-280 225-180Zm255-322Z"
+};
+
+const COLOR_MAP = {
+    cash: { bg: 'bg-blue-50', bgDark: 'dark:bg-blue-900/20', border: 'border-blue-500', bgSolid: 'bg-blue-500', text: 'text-blue-600' },
+    app: { bg: 'bg-purple-50', bgDark: 'dark:bg-purple-900/20', border: 'border-purple-500', bgSolid: 'bg-purple-500', text: 'text-purple-600' },
+    card: { bg: 'bg-green-50', bgDark: 'dark:bg-green-900/20', border: 'border-green-500', bgSolid: 'bg-green-500', text: 'text-green-600' }
+};
+
+function getIconSvg(name, classes = "w-6 h-6") {
+    if (!ICON_PATHS[name]) return '';
+    return `<svg class="${classes}" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="${ICON_PATHS[name]}"/></svg>`;
+}
+
 // State
 let state = {
     ...DEFAULTS,
@@ -234,25 +263,26 @@ function setupEventListeners() {
 }
 
 function updateToggleUI() {
-    const updateBtn = (active, btn, checkIcon, mainIcon, colorClass, textClass) => {
+    const updateBtn = (active, btn, checkIcon, mainIcon, type) => {
         if(!btn) return;
+        const colors = COLOR_MAP[type];
         btn.setAttribute('aria-pressed', active);
         if(active) {
-            btn.className = `w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 bg-${colorClass}-50 dark:bg-${colorClass}-900/20 border-${colorClass}-500`;
-            checkIcon.className = `w-5 h-5 rounded border-2 flex items-center justify-center bg-${colorClass}-500 border-${colorClass}-500 text-white`;
-            checkIcon.innerHTML = '<span class="material-symbols-outlined text-[14px] font-bold">check</span>';
-            mainIcon.className = `material-symbols-outlined ${textClass}`;
+            btn.className = `w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 ${colors.bg} ${colors.bgDark} ${colors.border}`;
+            checkIcon.className = `w-5 h-5 rounded border-2 flex items-center justify-center ${colors.bgSolid} ${colors.border} text-white`;
+            checkIcon.innerHTML = getIconSvg('check', 'w-[14px] h-[14px]');
+            mainIcon.setAttribute('class', `${colors.text} w-6 h-6`);
         } else {
              btn.className = `w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 bg-white dark:bg-card-dark border-slate-200 dark:border-slate-700 hover:border-slate-300`;
              checkIcon.className = `w-5 h-5 rounded border-2 flex items-center justify-center border-slate-300`;
              checkIcon.innerHTML = '';
-             mainIcon.className = `material-symbols-outlined text-slate-400`;
+             mainIcon.setAttribute('class', `text-slate-400 w-6 h-6`);
         }
     };
 
-    updateBtn(state.hasUsdCash, els.btnToggleCash, els.iconCheckCash, els.iconCash, 'blue', 'text-blue-600');
-    updateBtn(state.hasMoneyApp, els.btnToggleApp, els.iconCheckApp, els.iconApp, 'purple', 'text-purple-600');
-    updateBtn(state.hasCard, els.btnToggleCard, els.iconCheckCard, els.iconCard, 'green', 'text-green-600');
+    updateBtn(state.hasUsdCash, els.btnToggleCash, els.iconCheckCash, els.iconCash, 'cash');
+    updateBtn(state.hasMoneyApp, els.btnToggleApp, els.iconCheckApp, els.iconApp, 'app');
+    updateBtn(state.hasCard, els.btnToggleCard, els.iconCheckCard, els.iconCard, 'card');
 
     // Show/Hide Containers
     const toggleContainer = (container, visible) => {
@@ -383,7 +413,7 @@ function processRatesData(data) {
         }
 
          els.lastUpdated.innerHTML = `
-            <span class="material-symbols-outlined text-[14px]">update</span>
+            ${getIconSvg('update', 'w-[14px] h-[14px]')}
             <span>Updated: ${dateStr}</span>
         `;
     }
@@ -549,10 +579,10 @@ function updateUI(results) {
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-sm">emoji_events</span>
+                        ${getIconSvg('emoji_events', 'w-3.5 h-3.5')}
                         <span class="text-xs font-bold uppercase tracking-wide">Cheapest Option</span>
                     </div>
-                    <span class="material-symbols-outlined opacity-50">${getIcon(best.type)}</span>
+                    <div class="opacity-50">${getIconSvg(getIcon(best.type), 'w-6 h-6')}</div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <h2 class="text-3xl font-bold tracking-tight">${fmt(best.val)}</h2>
@@ -602,7 +632,7 @@ function updateUI(results) {
             <div class="${containerClasses}">
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-full ${iconBg}">
-                        <span class="material-symbols-outlined">${getIcon(res.type)}</span>
+                        ${getIconSvg(getIcon(res.type), 'w-6 h-6')}
                     </div>
                     <div>
                         <p class="text-sm font-bold text-slate-900 dark:text-white">${res.title}</p>
@@ -623,7 +653,7 @@ function updateUI(results) {
         els.savingsAlertContainer.innerHTML = `
             <div class="flex items-center gap-3 rounded-xl bg-warning/20 p-4 border border-warning/30">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warning text-yellow-900">
-                    <span class="material-symbols-outlined text-lg">savings</span>
+                    ${getIconSvg('savings', 'w-5 h-5')}
                 </div>
                 <p class="text-sm font-medium text-yellow-900 dark:text-yellow-100">
                     You save <span class="font-bold">${fmt(savings)}</span> compared to paying directly with your card!
