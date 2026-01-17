@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bolivia Blue Dollar Calculator & Exchange Rate</title>
 <meta name="description" content="Calculate best payment methods in Bolivia. Compare Blue Dollar rates vs Credit Cards & Apps to save money.">
 <link rel="canonical" href="https://boliviatravelmoney.site/" />
@@ -356,13 +358,4 @@
 <div class="pointer-events-none fixed bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent z-40 max-w-md mx-auto"></div>
 </div>
 <script src="js/app.js" defer></script>
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('SW Registered!', reg.scope))
-            .catch(err => console.log('SW Failed:', err));
-    });
-}
-</script>
 </body></html>
