@@ -73,11 +73,11 @@ async def get_monzo_rates():
         # Base is GBP
         results['GBP'] = 1.0
 
-        # Target currencies: USD, EUR, AUD, CAD, TWD, JPY, CNY, RUB, BOB, NZD, CHF, SGD, HKD, SEK, NOK, DKK, MXN
+        # Target currencies: USD, EUR, AUD, CAD, TWD, JPY, CNY, RUB, BOB, NZD, CHF, SGD, HKD, SEK, NOK, DKK, MXN, KRW, ILS
         # We also need these to be in the final 'official_rates' map.
         target_currencies = [
             'USD', 'EUR', 'AUD', 'CAD', 'TWD', 'JPY', 'CNY', 'RUB', 'BOB',
-            'NZD', 'CHF', 'SGD', 'HKD', 'SEK', 'NOK', 'DKK', 'MXN'
+            'NZD', 'CHF', 'SGD', 'HKD', 'SEK', 'NOK', 'DKK', 'MXN', 'KRW', 'ILS'
         ]
 
         for currency in target_currencies:
