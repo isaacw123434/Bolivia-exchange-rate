@@ -1,7 +1,0 @@
-127.0.0.1 - - [17/Jan/2026 03:46:31] "GET /index.html HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:31] "GET /js/tailwind_config.js HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:31] "GET /js/app.js HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:31] "GET /js/sw_register.js HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:32] "GET /data/rates.json HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:32] "GET /sw.js HTTP/1.1" 200 -
-127.0.0.1 - - [17/Jan/2026 03:46:32] "GET / HTTP/1.1" 200 -
