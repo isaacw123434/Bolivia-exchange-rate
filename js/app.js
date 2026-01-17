@@ -35,57 +35,61 @@ let state = {
 };
 
 // Elements
-window.els = {
-    billAmount: document.getElementById('bill-amount'),
-    homeCurrency: document.getElementById('home-currency'),
-    billCurrencyRadios: document.getElementsByName('bill_currency'),
+window.els = {};
 
-    // Toggles
-    themeToggle: document.getElementById('theme-toggle'),
-    themeIcon: document.getElementById('theme-icon'),
-    btnToggleCash: document.getElementById('btn-toggle-cash'),
-    btnToggleApp: document.getElementById('btn-toggle-app'),
-    btnToggleCard: document.getElementById('btn-toggle-card'),
-    iconCheckCash: document.getElementById('icon-check-cash'),
-    iconCheckApp: document.getElementById('icon-check-app'),
-    iconCheckCard: document.getElementById('icon-check-card'),
-    iconCash: document.getElementById('icon-cash'),
-    iconApp: document.getElementById('icon-app'),
-    iconCard: document.getElementById('icon-card'),
+function initEls() {
+    window.els = {
+        billAmount: document.getElementById('bill-amount'),
+        homeCurrency: document.getElementById('home-currency'),
+        billCurrencyRadios: document.getElementsByName('bill_currency'),
 
-    // Rate Containers
-    ratesContainerCash: document.getElementById('rates-container-cash'),
-    ratesContainerApp: document.getElementById('rates-container-app'),
-    ratesContainerCard: document.getElementById('rates-container-card'),
+        // Toggles
+        themeToggle: document.getElementById('theme-toggle'),
+        themeIcon: document.getElementById('theme-icon'),
+        btnToggleCash: document.getElementById('btn-toggle-cash'),
+        btnToggleApp: document.getElementById('btn-toggle-app'),
+        btnToggleCard: document.getElementById('btn-toggle-card'),
+        iconCheckCash: document.getElementById('icon-check-cash'),
+        iconCheckApp: document.getElementById('icon-check-app'),
+        iconCheckCard: document.getElementById('icon-check-card'),
+        iconCash: document.getElementById('icon-cash'),
+        iconApp: document.getElementById('icon-app'),
+        iconCard: document.getElementById('icon-card'),
 
-    // Inputs
-    homeToUsdRate: document.getElementById('home-to-usd-rate'),
-    streetExchangeRate: document.getElementById('street-exchange-rate'),
-    appRate: document.getElementById('app-rate'),
-    appFee: document.getElementById('app-fee'),
-    bankFeePct: document.getElementById('bank-fee-pct'),
-    bankFeeNumber: document.getElementById('bank-fee-number'),
-    cardBobRate: document.getElementById('card-bob-rate'),
-    merchantUsdRate: document.getElementById('merchant-usd-rate'),
+        // Rate Containers
+        ratesContainerCash: document.getElementById('rates-container-cash'),
+        ratesContainerApp: document.getElementById('rates-container-app'),
+        ratesContainerCard: document.getElementById('rates-container-card'),
 
-    // Containers
-    winnerCardContainer: document.getElementById('winner-card-container'),
-    resultsList: document.getElementById('results-list'),
-    savingsAlertContainer: document.getElementById('savings-alert-container'),
-    lastUpdated: document.getElementById('last-updated'),
+        // Inputs
+        homeToUsdRate: document.getElementById('home-to-usd-rate'),
+        streetExchangeRate: document.getElementById('street-exchange-rate'),
+        appRate: document.getElementById('app-rate'),
+        appFee: document.getElementById('app-fee'),
+        bankFeePct: document.getElementById('bank-fee-pct'),
+        bankFeeNumber: document.getElementById('bank-fee-number'),
+        cardBobRate: document.getElementById('card-bob-rate'),
+        merchantUsdRate: document.getElementById('merchant-usd-rate'),
 
-    // Display
-    flagIcon: document.getElementById('flag-icon'),
-    currencySymbol: document.getElementById('currency-symbol'),
-    homeCurrencyCodeDisplay: document.getElementById('home-currency-code-display'),
-    appFeeCurrency: document.getElementById('app-fee-currency'),
-    bankFeeDisplay: document.getElementById('bank-fee-display'),
+        // Containers
+        winnerCardContainer: document.getElementById('winner-card-container'),
+        resultsList: document.getElementById('results-list'),
+        savingsAlertContainer: document.getElementById('savings-alert-container'),
+        lastUpdated: document.getElementById('last-updated'),
 
-    // Dynamic Labels
-    labelHomeUsd: document.getElementById('label-home-to-usd'),
-    labelAppRate: document.getElementById('label-app-rate'),
-    labelOfficialRate: document.getElementById('label-official-rate')
-};
+        // Display
+        flagIcon: document.getElementById('flag-icon'),
+        currencySymbol: document.getElementById('currency-symbol'),
+        homeCurrencyCodeDisplay: document.getElementById('home-currency-code-display'),
+        appFeeCurrency: document.getElementById('app-fee-currency'),
+        bankFeeDisplay: document.getElementById('bank-fee-display'),
+
+        // Dynamic Labels
+        labelHomeUsd: document.getElementById('label-home-to-usd'),
+        labelAppRate: document.getElementById('label-app-rate'),
+        labelOfficialRate: document.getElementById('label-official-rate')
+    };
+}
 
 const FLAGS = {
     GBP: '🇬🇧', USD: '🇺🇸', EUR: '🇪🇺', AUD: '🇦🇺', CAD: '🇨🇦',
@@ -98,6 +102,7 @@ const SYMBOLS = {
 
 // Initialization
 async function init() {
+    initEls();
     initTheme();
     setupEventListeners();
     updateToggleUI(); // Initialize UI state
@@ -612,4 +617,8 @@ function debounce(func, wait) {
 const debouncedCalculate = debounce(calculate, 300);
 
 // Start
-init();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
