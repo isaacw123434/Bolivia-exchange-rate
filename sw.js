@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smart-pay-v5';
+const CACHE_NAME = 'smart-pay-v6';
 const ASSETS = [
   './',
   './index.html',
