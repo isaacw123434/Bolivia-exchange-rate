@@ -12,45 +12,43 @@ from datetime import datetime
 # Using dolarbo.com as it is easily scrapable and contains the "Dolar Blue" rate.
 URL = "https://dolarbo.com"
 
-def get_street_rate():
+async def get_street_rate():
+    print(f"Attempting to scrape {URL}...")
+    browser = None
     try:
-        print(f"Attempting to scrape {URL}...")
-        # Headers to mimic a browser
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
-            'Referer': 'https://www.google.com/',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'cross-site',
-            'Sec-Fetch-User': '?1',
-            'Cache-Control': 'max-age=0',
-        }
-        response = requests.get(URL, headers=headers, timeout=10)
+        browser = await launch(headless=True, args=['--no-sandbox'])
+        page = await browser.newPage()
 
-        if response.status_code != 200:
-            print(f"Failed to fetch page. Status code: {response.status_code}")
+        # Headers to mimic a browser
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
+
+        await page.goto(URL, {'waitUntil': 'networkidle0', 'timeout': 30000})
+
+        # Wait for the selector to appear
+        selector = '#dolar-libre-buy'
+        try:
+            await page.waitForSelector(selector, {'timeout': 10000})
+        except Exception:
+            print("Timeout waiting for selector.")
             return None
 
-        text = response.text
+        element = await page.querySelector(selector)
+        if element:
+            text = await page.evaluate('(element) => element.textContent', element)
+            text = text.strip()
+            # The text might be just the number, e.g., "9.60"
+            if text:
+                return float(text.replace(',', '.'))
 
-        # Scrape logic for dolarbo.com
-        # Look for <span class="main-card-rate-value" id="dolar-libre-buy">9.60</span>
-        # Or generally: id="dolar-libre-buy">NUMBER<
-        # We want the "Buy" rate (e.g. 9.60) as requested by user.
-        match = re.search(r'id="dolar-libre-buy">(\d+[.,]\d+)<', text)
-
-        if match:
-            return float(match.group(1).replace(',', '.'))
-
-        print("No rate pattern found in text.")
+        print("Element found but could not extract text.")
         return None
 
     except Exception as e:
         print(f"Error scraping street rate: {e}")
         return None
+    finally:
+        if browser:
+            await browser.close()
 
 async def get_monzo_rates():
     print("Launching browser for Monzo scraping...")
@@ -165,7 +163,7 @@ def main():
     asyncio.set_event_loop(loop)
     official_rates = loop.run_until_complete(get_monzo_rates())
 
-    rate = get_street_rate()
+    rate = loop.run_until_complete(get_street_rate())
 
     if rate is None:
         print("Street scraping failed.")
