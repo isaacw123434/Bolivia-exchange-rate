@@ -45,7 +45,6 @@ function initEls() {
 
         // Toggles
         themeToggle: document.getElementById('theme-toggle'),
-        themeIcon: document.getElementById('theme-icon'),
         btnToggleCash: document.getElementById('btn-toggle-cash'),
         btnToggleApp: document.getElementById('btn-toggle-app'),
         btnToggleCard: document.getElementById('btn-toggle-card'),
@@ -127,23 +126,20 @@ function initTheme() {
 
     if (isDark) {
         document.documentElement.classList.add('dark');
-        if(els.themeIcon) els.themeIcon.textContent = 'light_mode';
+        if(els.themeToggle) els.themeToggle.checked = true;
     } else {
         document.documentElement.classList.remove('dark');
-        if(els.themeIcon) els.themeIcon.textContent = 'dark_mode';
+        if(els.themeToggle) els.themeToggle.checked = false;
     }
 
     if(els.themeToggle) {
-        els.themeToggle.addEventListener('click', () => {
-            const isCurrentlyDark = document.documentElement.classList.contains('dark');
-            if (isCurrentlyDark) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                if(els.themeIcon) els.themeIcon.textContent = 'dark_mode';
-            } else {
+        els.themeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
                 document.documentElement.classList.add('dark');
                 localStorage.setItem('theme', 'dark');
-                if(els.themeIcon) els.themeIcon.textContent = 'light_mode';
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
             }
         });
     }
