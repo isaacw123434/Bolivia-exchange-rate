@@ -31,13 +31,4 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/container-queries'),
   ],
-  safelist: [
-    {
-      pattern: /(bg|border|text)-(blue|purple|green)-(50|500|600)/,
-    },
-    {
-      pattern: /bg-(blue|purple|green)-900\/20/,
-      variants: ['dark'],
-    }
-  ],
 }
