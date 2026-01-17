@@ -12,12 +12,44 @@ from datetime import datetime
 # Using dolarbo.com as it is easily scrapable and contains the "Dolar Blue" rate.
 URL = "https://dolarbo.com"
 
-async def get_street_rate():
-    print(f"Attempting to scrape {URL}...")
+def get_street_rate_simple():
+    print(f"Attempting to fetch {URL} using requests...")
+    try:
+        # User-Agent header is important to avoid 403s
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+        }
+        response = requests.get(URL, headers=headers, timeout=15)
+        response.raise_for_status()
+
+        # Regex to find the rate
+        # Target: <span class="main-card-rate-value" id="dolar-libre-buy">9.60</span>
+        match = re.search(r'id="dolar-libre-buy">([0-9.,]+)</span>', response.text)
+        if match:
+            text = match.group(1).replace(',', '.')
+            rate = float(text)
+            print(f"Successfully extracted street rate via requests: {rate}")
+            return rate
+        else:
+            print("Could not find rate in HTML via regex.")
+            return None
+    except Exception as e:
+        print(f"Error fetching street rate via requests: {e}")
+        return None
+
+async def get_street_rate_scraper():
+    print(f"Attempting to scrape {URL} with pyppeteer...")
     browser = None
     try:
         browser = await launch(headless=True, args=['--no-sandbox'])
         page = await browser.newPage()
+
+        # Stealth: Hide webdriver property
+        await page.evaluateOnNewDocument("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined,
+            });
+        """)
 
         # Headers to mimic a browser
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
@@ -49,6 +81,16 @@ async def get_street_rate():
     finally:
         if browser:
             await browser.close()
+
+async def get_street_rate():
+    # Try simple requests first
+    rate = get_street_rate_simple()
+    if rate is not None:
+        return rate
+
+    # Fallback to scraper
+    print("Simple fetch failed. Falling back to pyppeteer scraper...")
+    return await get_street_rate_scraper()
 
 async def get_monzo_rates():
     print("Launching browser for Monzo scraping...")
