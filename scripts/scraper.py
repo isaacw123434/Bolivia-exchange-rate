@@ -1,10 +1,12 @@
+import asyncio
+from pyppeteer import launch
 import requests
-import json
 import re
-from datetime import datetime
+import json
 import sys
 import os
 import time
+from datetime import datetime
 
 # Target Configuration
 # Using dolarbo.com as it is easily scrapable and contains the "Dolar Blue" rate.
@@ -38,55 +40,130 @@ def get_street_rate():
         return None
 
     except Exception as e:
-        print(f"Error scraping: {e}")
+        print(f"Error scraping street rate: {e}")
         return None
 
-def get_official_rates(api_key):
-    if not api_key:
-        print("No Exchange Rate API Key provided.")
-        return None
-
-    # New API endpoint as requested
-    url = "https://api.exchangerateapi.net/v1/latest"
-    params = {
-        "base": "USD"
-    }
-    headers = {
-        "apikey": api_key
-    }
-
+async def get_monzo_rates():
+    print("Launching browser for Monzo scraping...")
+    results = {}
+    browser = None
     try:
-        print(f"Fetching official rates from {url}...")
-        response = requests.get(url, params=params, headers=headers, timeout=10)
+        browser = await launch(headless=True, args=['--no-sandbox'])
+        page = await browser.newPage()
 
-        try:
-            data = response.json()
-        except ValueError:
-            print(f"Failed to parse JSON response. Status: {response.status_code}, Body: {response.text[:100]}...")
+        print("Navigating to https://monzo.com/ecb-rates ...")
+        await page.goto('https://monzo.com/ecb-rates', {'waitUntil': 'networkidle0'})
+
+        print("Finding select element...")
+        selects = await page.querySelectorAll('select')
+        # The second select is typically the currency switcher
+        if len(selects) < 2:
+            print("Error: Could not find currency select element.")
             return None
 
-        if response.status_code == 200 and (data.get('success') is True or 'rates' in data):
-            print("Successfully fetched official rates.")
-            return data.get('rates')
-        else:
-            # Handle API specific errors
-            error_message = data.get('message')
-            if not error_message:
-                error_data = data.get('error')
-                if isinstance(error_data, dict):
-                    error_message = error_data.get('info')
+        currency_select = selects[1]
+
+        # Get available currencies
+        options_handle = await currency_select.querySelectorAll('option')
+        available_currencies = []
+        for opt in options_handle:
+            val = await page.evaluate('(element) => element.value', opt)
+            available_currencies.append(val)
+
+        print(f"Found {len(available_currencies)} currencies available.")
+
+        # Base is GBP
+        results['GBP'] = 1.0
+
+        # Target currencies: USD, EUR, AUD, CAD, TWD, JPY, CNY, RUB, BOB
+        # We also need these to be in the final 'official_rates' map.
+        target_currencies = ['USD', 'EUR', 'AUD', 'CAD', 'TWD', 'JPY', 'CNY', 'RUB', 'BOB']
+
+        for currency in target_currencies:
+            if currency not in available_currencies:
+                print(f"Warning: Currency {currency} not found in Monzo dropdown.")
+                continue
+
+            print(f"Selecting {currency}...")
+
+            # Select the option
+            # We assume the class name hasn't changed. If it has, we might need a more robust selector.
+            # Using the element handle directly might be safer if possible, but page.select takes a selector string.
+            # We can use the class we found earlier 'Select_input__JYjsP' or try to identify it by index.
+            # Or use querySelector on the select handle? No.
+
+            # Use a more robust selector strategy.
+            # We found the second select is the currency switcher.
+            # We can use nth-of-type or the element handle itself.
+            # Since page.select takes a selector string, let's use a robust CSS selector.
+            # "select[role='listbox']" or "main select:nth-of-type(2)" or simply rely on the class if consistent,
+            # but user feedback suggested checking this.
+
+            # Let's try to find a selector that doesn't rely on the hashed class name.
+            # We can use the fact that it is likely the second select element on the page.
+            # (First one was Region).
+
+            # However, Pyppeteer's page.select requires a selector string.
+            # We can try to evaluate a JS function to set the value and dispatch event, but select is easier.
+
+            # Let's verify if there is a more stable attribute.
+            # In the dump we saw: Select: {'class': ('Select_input__JYjsP',), 'role': 'listbox'}
+            # 'role="listbox"' seems good!
+
+            try:
+                await page.select('select[role="listbox"]', currency)
+            except Exception:
+                 # Fallback to class if role selector fails
+                 print("Fallback to class selector...")
+                 await page.select('select.Select_input__JYjsP', currency)
+
+            # Wait for update.
+            await asyncio.sleep(1.0)
+
+            text_content = await page.evaluate('document.body.innerText')
+
+            # We want the Mastercard Rate.
+            # Format: "Mastercard Rate\n1 GBP = X CURRENCY"
+            # We search specifically for the pattern involving the currency code
+
+            # Look for "Mastercard Rate" and then the rate line.
+            # But the rate line is "1 GBP = ...".
+            # The issue with simple regex on whole body is duplicate "1 GBP =" for ECB rate.
+            # We need to ensure it's the one under "Mastercard Rate".
+
+            # Let's try to find the text "Mastercard Rate" and extract following text.
+            # Or improved regex:
+            # Mastercard Rate.*?1 GBP = ([0-9.]+)\s+{currency}
+            # using DOTALL
+
+            pattern = f"Mastercard Rate.*?1 GBP = ([0-9.]+)\\s+{currency}"
+            match = re.search(pattern, text_content, re.DOTALL)
+
+            if match:
+                rate = float(match.group(1))
+                print(f"Rate for {currency}: {rate}")
+                results[currency] = rate
+            else:
+                # Fallback: simple search if Mastercard Rate context fails (unlikely if page structure holds)
+                # But risk getting ECB rate.
+                print(f"Rate not found for {currency} (Mastercard Rate context). Trying simple search...")
+                pattern_simple = f"1 GBP = ([0-9.]+)\\s+{currency}"
+                match_simple = re.search(pattern_simple, text_content)
+                if match_simple:
+                    rate = float(match_simple.group(1))
+                    print(f"Rate for {currency} (Simple match): {rate}")
+                    results[currency] = rate
                 else:
-                    error_message = str(error_data)
-
-            if not error_message:
-                error_message = "Unknown error"
-
-            print(f"Failed to fetch official rates. Status: {response.status_code}, Error: {error_message}")
-            return None
+                    print(f"Rate completely not found for {currency}.")
 
     except Exception as e:
-        print(f"Error fetching official rates: {e}")
+        print(f"Error scraping Monzo: {e}")
         return None
+    finally:
+        if browser:
+            await browser.close()
+
+    return results
 
 def main():
     cached_data = None
@@ -95,49 +172,50 @@ def main():
         try:
             with open('data/rates.json', 'r') as f:
                 cached_data = json.load(f)
-                timestamp = cached_data.get('timestamp')
-                official_rates_cached = cached_data.get('official_rates')
-
-                if timestamp and official_rates_cached:
-                    # 1 day in seconds
-                    if (datetime.now().timestamp() - timestamp) < (24 * 3600):
-                        print("Using cached rates (less than 1 day old).")
-                        return
         except Exception as e:
             print(f"Error reading cache: {e}")
+
+    # Run the async scraping function
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    official_rates = loop.run_until_complete(get_monzo_rates())
 
     rate = get_street_rate()
 
     if rate is None:
-        print("Scraping failed.")
+        print("Street scraping failed.")
     else:
-        print(f"Successfully scraped rate: {rate}")
+        print(f"Successfully scraped street rate: {rate}")
 
-    # Fetch official rates
-    api_key = os.environ.get("EXCHANGE_API_KEY")
-    official_rates = get_official_rates(api_key)
+    # Fallback to cache for street rate if failed
+    if rate is None and cached_data:
+        print("Using cached street rate.")
+        rate = cached_data.get('street_rate_bob')
 
-    # If official rates fetch failed, try to use cached version
-    if not official_rates and cached_data and cached_data.get('official_rates'):
-        print("Using cached official rates as new fetch failed.")
-        official_rates = cached_data.get('official_rates')
+    base_currency = "GBP"
 
-    # Validate Backpacking Currencies
-    required_currencies = ['EUR', 'GBP', 'CAD', 'AUD', 'TWD', 'JPY', 'CNY', 'RUB']
-    if official_rates:
-        missing = [cur for cur in required_currencies if cur not in official_rates]
-        if missing:
-            print(f"Warning: The following currencies were not found in the API response: {missing}")
-        else:
-            print("All backpacker currencies (EU, UK, CAD, AUS, TWD, JPY, CNY, RUB) found in API.")
+    if not official_rates:
+        print("Monzo scraping failed.")
+        # Fallback to cache for official rates
+        if cached_data and cached_data.get('official_rates'):
+            print("Using cached official rates.")
+            official_rates = cached_data.get('official_rates')
+            base_currency = cached_data.get('base', 'USD') # Default to USD if base is missing (legacy)
+    else:
+        print(f"Successfully scraped Monzo rates. Count: {len(official_rates)}")
+
+    # Construct data object
+    # We maintain the "official_rates" field but now it's Monzo data (GBP base).
+    # We add "base": "GBP".
 
     data = {
         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "timestamp": datetime.now().timestamp(),
         "street_rate_bob": rate,
         "official_rates": official_rates,
-        "source": "scraped" if rate is not None else "failed",
-        "currency_pair": "USD_to_BOB_Cash_Sell"
+        "base": base_currency,
+        "source": "scraped_monzo" if official_rates else "failed_cached",
+        "currency_pair": "USD_to_BOB_Cash_Sell" # Keeps legacy field
     }
 
     output_file = 'data/rates.json'
