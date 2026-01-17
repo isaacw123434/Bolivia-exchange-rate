@@ -1,7 +1,7 @@
 {
-  "date": "2026-01-17 00:51:57",
-  "timestamp": 1768611117.805317,
-  "street_rate_bob": null,
+  "date": "2026-01-17 01:00:12",
+  "timestamp": 1768611612.515669,
+  "street_rate_bob": 9.6,
   "official_rates": {
     "GBP": 1.0,
     "USD": 1.336302,
