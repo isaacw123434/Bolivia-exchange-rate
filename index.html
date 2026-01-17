@@ -162,24 +162,29 @@
         <div class="w-full relative flex items-center justify-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors group">
             <label for="home-currency" class="text-sm font-bold text-slate-500 uppercase mr-1 cursor-pointer">Home Currency:</label>
             <span class="text-xl" id="flag-icon">🇬🇧</span>
-            <select id="home-currency" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10">
-                <option value="GBP">GBP</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="AUD">AUD</option>
-                <option value="CAD">CAD</option>
-                <option value="TWD">TWD</option>
-                <option value="JPY">JPY</option>
-                <option value="CNY">CNY</option>
-                <option value="RUB">RUB</option>
-                <option value="NZD">NZD</option>
-                <option value="SEK">SEK</option>
-                <option value="NOK">NOK</option>
-                <option value="DKK">DKK</option>
-                <option value="CHF">CHF</option>
-                <option value="KRW">KRW</option>
-                <option value="ILS">ILS</option>
-            </select>
+            <div class="relative flex items-center">
+                <select id="home-currency" style="background-image: none;" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10 relative">
+                    <option value="GBP">GBP</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="AUD">AUD</option>
+                    <option value="CAD">CAD</option>
+                    <option value="TWD">TWD</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CNY">CNY</option>
+                    <option value="RUB">RUB</option>
+                    <option value="NZD">NZD</option>
+                    <option value="SEK">SEK</option>
+                    <option value="NOK">NOK</option>
+                    <option value="DKK">DKK</option>
+                    <option value="CHF">CHF</option>
+                    <option value="KRW">KRW</option>
+                    <option value="ILS">ILS</option>
+                </select>
+                <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center justify-center w-6 bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors z-20 rounded-r-lg">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
         </div>
     </div>
 </section>
