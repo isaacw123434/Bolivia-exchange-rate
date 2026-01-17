@@ -2,7 +2,7 @@ import requests
 import json
 import sys
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 import asyncio
 import re
@@ -176,8 +176,8 @@ def main():
 
     # Construct data object
     data = {
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "timestamp": datetime.now().timestamp(),
+        "date": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(timezone.utc).timestamp(),
         "street_rate_bob": street_rate,
         "official_rates": official_rates,
         "base": "GBP",
