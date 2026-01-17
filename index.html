@@ -260,7 +260,7 @@
                  <input id="card-bob-rate" class="w-full border-2 border-green-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-green-500 focus:outline-none" type="number" step="0.01"/>
             </div>
              <div>
-                 <label for="merchant-usd-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Merchant USD Rate (USD → BOB)</label>
+                 <label for="merchant-usd-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Official USD Rate (USD → BOB)</label>
                  <input id="merchant-usd-rate" class="w-full border-2 border-green-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-green-500 focus:outline-none" type="number" step="0.01"/>
             </div>
         </div>
@@ -285,20 +285,20 @@
         <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
             <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <svg class="text-primary w-6 h-6" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="M453-274h60v-45h48q15 0 24.5-12t9.5-27v-114.74q0-16.26-9.5-27.76T561-512H425v-69h170v-60h-82v-45h-60v45h-49q-15 0-27 12t-12 28.12v113.76q0 16.12 12 25.62t27 9.5h131v73H365v60h88v45ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z"/></svg>
-                ATM Withdrawal Limits
+                ATM Trap & Limits
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
-                Most Bolivian ATMs (like Banco Unión or BNB) have a withdrawal limit of roughly <strong>2,000 - 4,000 BOB per transaction</strong>. You may be charged a fee for every withdrawal, so it is better to take out the maximum amount possible at once.
+                Warning: ATMs use the official bank rate (approx. 6.96 BOB), meaning you lose ~40% of your value compared to the street rate. If you must use one, limits are usually 1,500 – 2,000 BOB per transaction. Always withdraw the maximum amount allowed to offset the fixed foreign transaction fees.
             </p>
         </div>
 
         <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4">
             <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <svg class="text-primary w-6 h-6" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="M212-241v-339h60v339h-60Zm242 0v-339h60v339h-60ZM80-121v-60h800v60H80Zm608-120v-339h60v339h-60ZM80-640v-53l400-228 400 228v53H80Zm134-60h532-532Zm0 0h532L480-852 214-700Z"/></svg>
-                Western Union Hack
+                PayPal / Xoom Hack
             </h3>
             <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">
-                If you run out of USD cash, you can <strong>send money to yourself via Western Union</strong> app and pick it up in Bolivia. Ensure you select "Payout in USD" (if available) or check their specific BOB exchange rate, which is often better than the official bank rate.
+                Running low on cash? Use Xoom (by PayPal) to send money to yourself. Select "Cash Pickup" as the delivery method and collect it at partner locations like Banco FIE. Always check the exchange rate Xoom offers before sending—it is often better than the ATM rate, but lower than the street rate.
             </p>
         </div>
     </section>
