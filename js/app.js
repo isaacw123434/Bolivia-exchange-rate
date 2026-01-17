@@ -266,18 +266,25 @@ function updateCurrencyDisplay() {
 // Data Fetching
 function processRatesData(data) {
     // 1. Process Official Rates
-    if (data.official_rates && data.official_rates['USD']) {
+    // Supports both old USD-base (implicit 1) and new GBP-base
+    if (data.official_rates) {
         const official = data.official_rates;
 
-        // official_rates are based on USD (1 USD = X Currency)
-        const usdToHome = official[state.homeCurrency];
-        const usdToBob = official['BOB'];
+        // Handle base currency transition
+        // If data.base is set, use it. Otherwise assume USD.
+        // But regardless of base, we need to convert everything relative to Home Currency.
 
-        if (usdToHome && usdToBob) {
+        // Rate(Home->Target) = Rate(Base->Target) / Rate(Base->Home)
+
+        const baseToHome = official[state.homeCurrency];
+        const baseToBob = official['BOB'];
+        const baseToUsd = official['USD'] || ((!data.base || data.base === 'USD') ? 1 : 0); // If base is USD or missing (legacy), USD is 1.
+
+        if (baseToHome && baseToBob && baseToUsd) {
             // We want 1 Home = X USD.
-            // If 1 USD = 0.82 GBP, then 1 GBP = 1/0.82 USD = 1.21 USD.
-            state.rates.USD = 1 / usdToHome;
-            state.rates.BOB = usdToBob / usdToHome;
+            state.rates.USD = baseToUsd / baseToHome;
+            // We want 1 Home = Y BOB.
+            state.rates.BOB = baseToBob / baseToHome;
         }
     }
 
