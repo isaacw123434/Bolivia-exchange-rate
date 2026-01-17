@@ -86,9 +86,10 @@
 <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Bolivia Blue Dollar Rate & Travel Money Calculator</h1>
 <div class="flex items-center gap-2">
     <!-- Dark Mode Toggle -->
-    <button id="theme-toggle" class="flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle Dark Mode">
-        <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
-    </button>
+    <label class="relative inline-flex items-center cursor-pointer" aria-label="Toggle Dark Mode">
+        <input type="checkbox" id="theme-toggle" class="sr-only peer">
+        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+    </label>
 
 </div>
 </header>
