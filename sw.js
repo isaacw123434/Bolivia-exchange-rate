@@ -1,11 +1,9 @@
-const CACHE_NAME = 'smart-pay-v4';
+const CACHE_NAME = 'smart-pay-v5';
 const ASSETS = [
   './',
   './index.html',
   './js/app.js',
-  './js/sw_register.js',
-  './js/tailwind_config.js',
-  'https://cdn.tailwindcss.com?plugins=forms,container-queries',
+  './static/output.css',
   'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap'
 ];
