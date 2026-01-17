@@ -12,26 +12,68 @@ from datetime import datetime
 # Using dolarbo.com as it is easily scrapable and contains the "Dolar Blue" rate.
 URL = "https://dolarbo.com"
 
+# Comprehensive headers to mimic a real browser
+BROWSER_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Cache-Control': 'max-age=0',
+}
+
+def extract_rate_from_text(text):
+    """
+    Tries multiple regex patterns to extract the rate.
+    """
+    # Strategy 1: Specific ID
+    match = re.search(r'id="dolar-libre-buy">([0-9.,]+)</span>', text)
+    if match:
+        return float(match.group(1).replace(',', '.'))
+
+    # Strategy 2: Schema.org JSON-LD
+    # "price": 9.60, "priceCurrency": "BOB"
+    match = re.search(r'"price":\s*([0-9.]+),\s*"priceCurrency":\s*"BOB"', text)
+    if match:
+        return float(match.group(1))
+
+    # Strategy 3: rawData in script
+    # {"t":1768602408000,"b":"9.60","s":"9.10"}
+    # Look for the last entry in the list which might be close to the end of the line
+    match = re.findall(r'"b":"([0-9.]+)"', text)
+    if match:
+        # Get the last one as it's likely the most recent
+        return float(match[-1])
+
+    # Strategy 4: Loose text search around "Dolar Blue"
+    # Dolar Blue ... 9.60 Compra
+    # Use a simpler check for number followed by "Compra"
+    match = re.search(r'([0-9.,]+)\s+Compra', text)
+    if match:
+         try:
+             return float(match.group(1).replace(',', '.'))
+         except ValueError:
+             pass
+
+    return None
+
 def get_street_rate_simple():
     print(f"Attempting to fetch {URL} using requests...")
     try:
-        # User-Agent header is important to avoid 403s
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-        }
-        response = requests.get(URL, headers=headers, timeout=15)
+        response = requests.get(URL, headers=BROWSER_HEADERS, timeout=15)
         response.raise_for_status()
 
-        # Regex to find the rate
-        # Target: <span class="main-card-rate-value" id="dolar-libre-buy">9.60</span>
-        match = re.search(r'id="dolar-libre-buy">([0-9.,]+)</span>', response.text)
-        if match:
-            text = match.group(1).replace(',', '.')
-            rate = float(text)
+        rate = extract_rate_from_text(response.text)
+        if rate:
             print(f"Successfully extracted street rate via requests: {rate}")
             return rate
         else:
-            print("Could not find rate in HTML via regex.")
+            print("Could not find rate in HTML via regex/strategies.")
             return None
     except Exception as e:
         print(f"Error fetching street rate via requests: {e}")
@@ -44,35 +86,55 @@ async def get_street_rate_scraper():
         browser = await launch(headless=True, args=['--no-sandbox'])
         page = await browser.newPage()
 
-        # Stealth: Hide webdriver property
+        # Apply headers
+        await page.setExtraHTTPHeaders(BROWSER_HEADERS)
+
+        # Stealth: Hide webdriver property and others
         await page.evaluateOnNewDocument("""
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => undefined,
             });
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en', 'es'],
+            });
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5],
+            });
         """)
-
-        # Headers to mimic a browser
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
 
         await page.goto(URL, {'waitUntil': 'domcontentloaded', 'timeout': 30000})
 
         # Wait for the selector to appear
         selector = '#dolar-libre-buy'
         try:
-            await page.waitForSelector(selector, {'timeout': 60000})
+            await page.waitForSelector(selector, {'timeout': 30000}) # 30s timeout
+            element = await page.querySelector(selector)
+            if element:
+                text = await page.evaluate('(element) => element.textContent', element)
+                text = text.strip()
+                if text:
+                    return float(text.replace(',', '.'))
         except Exception:
-            print("Timeout waiting for selector.")
-            return None
+            print("Timeout waiting for selector or selector failed. Trying fallback extraction...")
 
-        element = await page.querySelector(selector)
-        if element:
-            text = await page.evaluate('(element) => element.textContent', element)
-            text = text.strip()
-            # The text might be just the number, e.g., "9.60"
-            if text:
-                return float(text.replace(',', '.'))
+        # Fallback 1: Evaluate chartData
+        try:
+            # Check for window.chartData
+            data = await page.evaluate('(() => { if(window.chartData && window.chartData.buyPrices && window.chartData.buyPrices.length > 0) return window.chartData.buyPrices[window.chartData.buyPrices.length-1].y; return null; })()')
+            if data:
+                print(f"Extracted rate from window.chartData: {data}")
+                return float(data)
+        except Exception as e:
+            print(f"Error accessing chartData: {e}")
 
-        print("Element found but could not extract text.")
+        # Fallback 2: Get full content and regex
+        content = await page.content()
+        rate = extract_rate_from_text(content)
+        if rate:
+             print(f"Extracted rate from page content via regex: {rate}")
+             return rate
+
+        print("All scraping strategies failed.")
         return None
 
     except Exception as e:
