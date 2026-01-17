@@ -1,4 +1,4 @@
-# Bolivia Blue Dollar Calculator & Exchange Rate
+# Bolivia Blue Dollar Calculator
 
 This project provides a web-based calculator to compare official and "Blue Dollar" exchange rates in Bolivia. It helps travelers decide whether to use cash, credit cards, or money transfer apps.
 
