@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "This project provides a web-based calculator to compare official and \"Blue Dollar\" exchange rates in Bolivia. It helps travelers decide whether to use cash, credit cards, or money transfer apps.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./src/input.css -o ./static/output.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaacw123434/Bolivia-exchange-rate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/isaacw123434/Bolivia-exchange-rate/issues"
+  },
+  "homepage": "https://github.com/isaacw123434/Bolivia-exchange-rate#readme",
+  "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "tailwindcss": "^3.4.19"
+  }
+}
