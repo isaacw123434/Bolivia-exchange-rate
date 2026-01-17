@@ -16,7 +16,20 @@ async def get_street_rate():
     print(f"Attempting to scrape {URL}...")
     browser = None
     try:
-        browser = await launch(headless=True, args=['--no-sandbox'])
+        # Launch browser with arguments optimized for CI/Container environments
+        browser = await launch(
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
+            ]
+        )
         page = await browser.newPage()
 
         # Headers to mimic a browser
@@ -75,7 +88,20 @@ async def get_monzo_rates():
     results = {}
     browser = None
     try:
-        browser = await launch(headless=True, args=['--no-sandbox'])
+        # Launch browser with arguments optimized for CI/Container environments
+        browser = await launch(
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
+            ]
+        )
         page = await browser.newPage()
 
         print("Navigating to https://monzo.com/ecb-rates ...")
