@@ -139,6 +139,52 @@ async def get_monzo_rates():
 
     return results
 
+def update_index_html(timestamp, filepath='index.html'):
+    """Updates the index.html title and description with the current date."""
+    if not os.path.exists(filepath):
+        print(f"Warning: {filepath} not found. Skipping HTML update.")
+        return
+
+    try:
+        date_str = timestamp.strftime("%d %b %Y")
+        print(f"Updating {filepath} with date: {date_str}")
+
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Update Title
+        # Regex to capture content inside <title>
+        # We use capturing groups to keep tags
+        title_pattern = r'(<title>)(.*?)(</title>)'
+
+        def title_replacer(match):
+            start_tag, inner_text, end_tag = match.groups()
+            # Remove existing date suffix if present (e.g., " - 17 Jan 2026")
+            # Pattern: space dash space digit(1-2) space word(3) space digit(4)
+            clean_text = re.sub(r' - \d{1,2} [A-Za-z]{3} \d{4}$', '', inner_text)
+            return f'{start_tag}{clean_text} - {date_str}{end_tag}'
+
+        content = re.sub(title_pattern, title_replacer, content, count=1, flags=re.DOTALL)
+
+        # Update Description
+        # Regex to capture content attribute in meta description
+        desc_pattern = r'(<meta\s+name="description"\s+content=")(.*?)(")'
+
+        def desc_replacer(match):
+            start_attr, inner_text, end_attr = match.groups()
+            # Remove existing date prefix if present (e.g., "Updated 17 Jan 2026. ")
+            clean_text = re.sub(r'^Updated \d{1,2} [A-Za-z]{3} \d{4}\. ', '', inner_text)
+            return f'{start_attr}Updated {date_str}. {clean_text}{end_attr}'
+
+        content = re.sub(desc_pattern, desc_replacer, content, count=1, flags=re.DOTALL)
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+        print(f"Successfully updated {filepath}")
+    except Exception as e:
+        print(f"Error updating HTML: {e}")
+
 def main():
     cached_data = None
     output_file = 'data/rates.json'
@@ -175,9 +221,10 @@ def main():
             # Assuming cached data has GBP base if valid
 
     # Construct data object
+    now = datetime.now(timezone.utc)
     data = {
-        "date": datetime.now(timezone.utc).isoformat(),
-        "timestamp": datetime.now(timezone.utc).timestamp(),
+        "date": now.isoformat(),
+        "timestamp": now.timestamp(),
         "street_rate_bob": street_rate,
         "official_rates": official_rates,
         "base": "GBP",
@@ -193,6 +240,10 @@ def main():
         with open(output_file, 'w') as f:
             json.dump(data, f, indent=2)
         print(f"Saved data to {output_file}")
+
+        # Update HTML
+        update_index_html(now)
+
     except Exception as e:
         print(f"Error saving file: {e}")
         sys.exit(1)
