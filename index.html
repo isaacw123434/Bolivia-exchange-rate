@@ -207,6 +207,10 @@
              <div>
                 <label for="street-exchange-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Street Rate (USD → BOB)</label>
                 <input id="street-exchange-rate" class="w-full border-2 border-blue-200 rounded p-2 text-sm bg-white dark:bg-card-dark focus:border-blue-500 focus:outline-none" type="number" step="0.01"/>
+                <p id="street-rate-warning" class="hidden mt-1 text-[10px] font-bold text-yellow-700 dark:text-yellow-300 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[12px]">warning</span>
+                    Using estimated rates - Connect to update
+                </p>
             </div>
             <div>
                  <label for="home-to-usd-rate" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1"><span id="label-home-to-usd">Home Currency → USD</span></label>
