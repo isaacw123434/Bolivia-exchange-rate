@@ -154,9 +154,11 @@ async function init() {
 
 function initTheme() {
     const theme = localStorage.getItem('theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const systemDark = mediaQuery.matches;
     const isDark = theme === 'dark' || (!theme && systemDark);
 
+    // Initial Set
     if (isDark) {
         document.documentElement.classList.add('dark');
         if(els.themeToggle) els.themeToggle.checked = true;
@@ -165,6 +167,7 @@ function initTheme() {
         if(els.themeToggle) els.themeToggle.checked = false;
     }
 
+    // Toggle Listener
     if(els.themeToggle) {
         els.themeToggle.addEventListener('change', (e) => {
             if (e.target.checked) {
@@ -176,6 +179,19 @@ function initTheme() {
             }
         });
     }
+
+    // System Preference Listener
+    mediaQuery.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                document.documentElement.classList.add('dark');
+                if(els.themeToggle) els.themeToggle.checked = true;
+            } else {
+                document.documentElement.classList.remove('dark');
+                if(els.themeToggle) els.themeToggle.checked = false;
+            }
+        }
+    });
 }
 
 function setupEventListeners() {
