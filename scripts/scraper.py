@@ -17,7 +17,17 @@ def get_street_rate_simple():
     try:
         # User-Agent header is important to avoid 403s
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
         }
         response = requests.get(URL, headers=headers, timeout=15)
         response.raise_for_status()
@@ -54,25 +64,31 @@ async def get_street_rate_scraper():
         # Headers to mimic a browser
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
 
-        await page.goto(URL, {'waitUntil': 'domcontentloaded', 'timeout': 30000})
+        await page.goto(URL, {'waitUntil': 'domcontentloaded', 'timeout': 60000})
 
-        # Wait for the selector to appear
+        # Try primary selector
         selector = '#dolar-libre-buy'
         try:
-            await page.waitForSelector(selector, {'timeout': 60000})
+            await page.waitForSelector(selector, {'timeout': 30000})
+            element = await page.querySelector(selector)
+            if element:
+                text = await page.evaluate('(element) => element.textContent', element)
+                text = text.strip()
+                # The text might be just the number, e.g., "9.60"
+                if text:
+                    return float(text.replace(',', '.'))
         except Exception:
-            print("Timeout waiting for selector.")
-            return None
+            print("Timeout waiting for primary selector or extraction failed.")
 
-        element = await page.querySelector(selector)
-        if element:
-            text = await page.evaluate('(element) => element.textContent', element)
-            text = text.strip()
-            # The text might be just the number, e.g., "9.60"
-            if text:
-                return float(text.replace(',', '.'))
+        # Fallback: Search in page content using regex
+        print("Trying fallback regex on page content...")
+        content = await page.content()
+        match = re.search(r'id="dolar-libre-buy">([0-9.,]+)</span>', content)
+        if match:
+             print("Found rate via regex in pyppeteer content.")
+             return float(match.group(1).replace(',', '.'))
 
-        print("Element found but could not extract text.")
+        print("Could not extract rate from page content.")
         return None
 
     except Exception as e:
@@ -82,6 +98,36 @@ async def get_street_rate_scraper():
         if browser:
             await browser.close()
 
+def get_street_rate_fallback():
+    print("Attempting to fetch rate from fallback (GitHub CSV)...")
+    try:
+        url = "https://raw.githubusercontent.com/mauforonda/dolares/main/buy.csv"
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+
+        lines = response.text.strip().split('\n')
+        if len(lines) < 2:
+            print("CSV is empty or invalid.")
+            return None
+
+        # Get the last line
+        last_line = lines[-1]
+        parts = last_line.split(',')
+        # timestamp,low,high,median,vwap,naive
+        # We want median which is index 3
+        if len(parts) >= 4:
+            median = parts[3]
+            if median:
+                rate = float(median)
+                print(f"Successfully extracted fallback rate: {rate}")
+                return rate
+
+        print("Could not parse CSV line.")
+        return None
+    except Exception as e:
+        print(f"Error fetching fallback rate: {e}")
+        return None
+
 async def get_street_rate():
     # Try simple requests first
     rate = get_street_rate_simple()
@@ -90,7 +136,13 @@ async def get_street_rate():
 
     # Fallback to scraper
     print("Simple fetch failed. Falling back to pyppeteer scraper...")
-    return await get_street_rate_scraper()
+    rate = await get_street_rate_scraper()
+    if rate is not None:
+        return rate
+
+    # Fallback to GitHub CSV
+    print("Scraper failed. Falling back to GitHub CSV...")
+    return get_street_rate_fallback()
 
 async def get_monzo_rates():
     print("Launching browser for Monzo scraping...")
