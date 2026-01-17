@@ -2,7 +2,7 @@ import requests
 import json
 import sys
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import time
 import asyncio
 import re
@@ -196,6 +196,110 @@ def main():
     except Exception as e:
         print(f"Error saving file: {e}")
         sys.exit(1)
+
+    # 3. Update index.html with static date for SEO
+    try:
+        update_index_html(datetime.now(timezone.utc))
+    except Exception as e:
+        print(f"Error updating index.html: {e}")
+
+def update_index_html(date_obj):
+    """
+    Updates index.html with the current date in the meta description and the displayed div.
+    Format: DD/MM/YYYY, HH:MM:SS GMT-5
+    """
+    html_path = 'index.html'
+    if not os.path.exists(html_path):
+        print(f"Error: {html_path} not found.")
+        return
+
+    print(f"Updating {html_path} with current date...")
+
+    # Calculate GMT-5 time
+    # UTC is date_obj. We want to display GMT-5.
+    # We can subtract 5 hours.
+    gmt_minus_5 = date_obj.replace(tzinfo=timezone.utc).astimezone(timezone.utc) - timedelta(hours=5)
+
+    # Format: 17/01/2026, 7:02:33 GMT-5
+    # Note: 7:02:33 (no AM/PM in user request example? "7:02:33")
+    # Actually user example: "17/01/2026, 7:02:33 GMT-5"
+    formatted_date = gmt_minus_5.strftime("%d/%m/%Y, %-H:%M:%S GMT-5")
+    # %-H is platform specific (Linux). If on Windows use %#H.
+    # Or just %H for 0-padded (which 7 is not in example? "7:02:33" usually implies no padding or 07).
+    # User wrote "7:02:33".
+    # If it is PM, 7 would be 19. If AM, 7 is 7.
+    # Let's assume %H (24 hour) or %I (12 hour). "7" suggests 12 hour or just morning.
+    # I'll use %H:%M:%S to be safe standard. Or %-I if 12 hour.
+    # Let's stick to %H:%M:%S for 24h which is unambiguous, or matches user input.
+    # The user example: "7:02:33".
+
+    # Let's just use strftime default %H (07). If user wants "7", I can strip the leading zero.
+    formatted_date = gmt_minus_5.strftime("%d/%m/%Y, %H:%M:%S GMT-5")
+
+    # Strip leading zero from hour if strictly following "7:02:33" appearance for single digits
+    if formatted_date.split(', ')[1].startswith('0'):
+         formatted_date = formatted_date.replace(', 0', ', ', 1)
+
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 1. Update Meta Description
+    # Regex to find content="..."
+    # <meta name="description" content="...">
+
+    def replace_meta(match):
+        original_content = match.group(1)
+        # Remove existing "Updated: ... . " if present to avoid duplication
+        clean_content = re.sub(r'^Updated: .*?\. ', '', original_content)
+        return f'<meta name="description" content="Updated: {formatted_date}. {clean_content}">'
+
+    new_content = re.sub(r'<meta name="description" content="(.*?)">', replace_meta, content)
+
+    # 2. Update #last-updated div
+    # <div id="last-updated" ...>\n        <svg ...>...</svg>\n        <span>Loading rates...</span>\n    </div>
+    # We want to replace the inner content or just the span.
+    # The existing content has a span with "Loading rates...".
+
+    # Helper to find the div content
+    # We look for id="last-updated" then capture until </div>
+    # This is risky with regex if nested divs, but this div seems simple.
+
+    # Actually, let's just replace the "<span>Loading rates...</span>" or "<span>Updated: ...</span>"
+    # inside that specific block if we can locate it.
+
+    # But the id is unique.
+    # Let's match the whole div block.
+    # <div id="last-updated"[^>]*>.*?</div>
+
+    # Pattern to match the div opening, content, and closing.
+    # Using DOTALL.
+    pattern_div = r'(<div id="last-updated"[^>]*>)(.*?)(</div>)'
+
+    def replace_div_content(match):
+        div_open = match.group(1)
+        # We want to keep the SVG if possible.
+        # The SVG is inside group 2.
+        inner = match.group(2)
+
+        # Check if SVG exists in inner, preserve it.
+        svg_match = re.search(r'<svg.*?</svg>', inner, re.DOTALL)
+        svg_html = svg_match.group(0) if svg_match else ''
+
+        # New inner content
+        # Note: the user might want the specific "Current Blue Dollar..." text here? No, that's the H2.
+        # Just the date.
+        new_inner = f'\n        {svg_html}\n        <span>Updated: {formatted_date}</span>\n    '
+
+        return f'{div_open}{new_inner}</div>'
+
+    new_content = re.sub(pattern_div, replace_div_content, new_content, flags=re.DOTALL)
+
+    if new_content != content:
+        with open(html_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        print(f"Updated {html_path} successfully.")
+    else:
+        print("No changes made to index.html (pattern match failed?).")
 
 if __name__ == "__main__":
     main()
