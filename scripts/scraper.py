@@ -1,6 +1,4 @@
 import requests
-import cloudscraper
-from bs4 import BeautifulSoup
 import json
 import sys
 import os
@@ -11,7 +9,7 @@ import re
 from pyppeteer import launch
 
 # Target Configuration
-DOLARBO_URL = "https://dolarbo.com"
+DOLARAPI_URL = "https://bo.dolarapi.com/v1/dolares/binance"
 MONZO_BASE_URL = "https://monzo.com/currency-converter"
 
 # Headers to mimic a browser
@@ -21,24 +19,22 @@ HEADERS = {
 
 def get_street_rate():
     """
-    Scrapes the street rate (dolar blue) from dolarbo.com using cloudscraper and BeautifulSoup.
+    Fetches the street rate (dolar blue) from dolarapi.com.
     """
-    print(f"Fetching street rate from {DOLARBO_URL}...")
+    print(f"Fetching street rate from {DOLARAPI_URL}...")
     try:
-        # Create a scraper instance that mimics a browser
-        scraper = cloudscraper.create_scraper()
-        response = scraper.get(DOLARBO_URL)
+        response = requests.get(DOLARAPI_URL, headers=HEADERS, timeout=10)
         response.raise_for_status()
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        buy_rate_element = soup.find(id="dolar-libre-buy")
+        data = response.json()
 
-        if buy_rate_element:
-            text = buy_rate_element.text.strip()
-            print(f"Found street rate: {text}")
-            return float(text.replace(',', '.'))
+        # We use the 'venta' rate as it represents the street price
+        if 'venta' in data and data['venta'] is not None:
+            rate = float(data['venta'])
+            print(f"Found street rate: {rate}")
+            return rate
         else:
-            print("Could not find the buy rate element on dolarbo.com.")
+            print("Could not find 'venta' rate in API response.")
             return None
 
     except Exception as e:
