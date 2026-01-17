@@ -1,4 +1,5 @@
 import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 import json
 import sys
@@ -17,11 +18,13 @@ HEADERS = {
 
 def get_street_rate():
     """
-    Scrapes the street rate (dolar blue) from dolarbo.com using requests and BeautifulSoup.
+    Scrapes the street rate (dolar blue) from dolarbo.com using cloudscraper and BeautifulSoup.
     """
     print(f"Fetching street rate from {DOLARBO_URL}...")
     try:
-        response = requests.get(DOLARBO_URL, headers=HEADERS, timeout=15)
+        # Create a scraper instance that mimics a browser
+        scraper = cloudscraper.create_scraper()
+        response = scraper.get(DOLARBO_URL)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, 'html.parser')
