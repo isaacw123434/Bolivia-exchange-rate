@@ -93,11 +93,15 @@ function initEls() {
 
 const FLAGS = {
     GBP: '🇬🇧', USD: '🇺🇸', EUR: '🇪🇺', AUD: '🇦🇺', CAD: '🇨🇦',
-    TWD: '🇹🇼', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺'
+    TWD: '🇹🇼', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺',
+    NZD: '🇳🇿', SEK: '🇸🇪', NOK: '🇳🇴', DKK: '🇩🇰', CHF: '🇨🇭',
+    KRW: '🇰🇷', ILS: '🇮🇱'
 };
 const SYMBOLS = {
     GBP: '£', USD: '$', EUR: '€', AUD: '$', CAD: '$', BOB: 'Bs',
-    TWD: 'NT$', JPY: '¥', CNY: '¥', RUB: '₽'
+    TWD: 'NT$', JPY: '¥', CNY: '¥', RUB: '₽',
+    NZD: '$', SEK: 'kr', NOK: 'kr', DKK: 'kr', CHF: 'Fr.',
+    KRW: '₩', ILS: '₪'
 };
 
 // Initialization
