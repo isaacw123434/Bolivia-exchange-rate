@@ -139,6 +139,27 @@ async def get_monzo_rates():
 
     return results
 
+def update_sitemap(timestamp, filepath='sitemap.xml'):
+    """Generates a sitemap.xml with the current date as lastmod."""
+    date_str = timestamp.strftime("%Y-%m-%d")
+
+    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://boliviatravelmoney.site/</loc>
+    <lastmod>{date_str}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>"""
+
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(sitemap_content)
+        print(f"Successfully generated {filepath}")
+    except Exception as e:
+        print(f"Error generating sitemap: {e}")
+
 def update_index_html(timestamp, filepath='index.html'):
     """Updates the index.html title and description with the current date."""
     if not os.path.exists(filepath):
@@ -177,6 +198,21 @@ def update_index_html(timestamp, filepath='index.html'):
             return f'{start_attr}Updated {date_str}. {clean_text}{end_attr}'
 
         content = re.sub(desc_pattern, desc_replacer, content, count=1, flags=re.DOTALL)
+
+        # Update JSON-LD dateModified
+        schema_pattern = r'("applicationCategory": "FinanceApplication",)'
+
+        def schema_replacer(match):
+            # Inject the dateModified field right after the category
+            return f'{match.group(1)}\n  "dateModified": "{timestamp.isoformat()}",'
+
+        # Remove old if exists
+        content = re.sub(r'"dateModified": ".*?",', '', content)
+        content = re.sub(schema_pattern, schema_replacer, content, count=1)
+
+        # Update Revised Meta Tag
+        revised_pattern = r'(<meta name="revised" content=")(.*?)(" />)'
+        content = re.sub(revised_pattern, f'\\g<1>{timestamp.strftime("%A, %B %d, %Y")}\\g<3>', content)
 
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(content)
@@ -243,6 +279,7 @@ def main():
 
         # Update HTML
         update_index_html(now)
+        update_sitemap(now)
 
     except Exception as e:
         print(f"Error saving file: {e}")
