@@ -15,7 +15,7 @@ URL = "https://dolarbo.com"
 
 # Comprehensive headers to mimic a real browser
 BROWSER_HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
     'Accept-Encoding': 'gzip, deflate',
@@ -139,8 +139,17 @@ async def get_street_rate_scraper():
         except Exception as e:
             print(f"Error accessing chartData: {e}")
 
-        # Fallback 2: Get full content and regex
+        # Fallback 2: Parse full content with BeautifulSoup (as requested)
         content = await page.content()
+        soup = BeautifulSoup(content, 'html.parser')
+        buy_rate_element = soup.find(id="dolar-libre-buy")
+
+        if buy_rate_element:
+            text = buy_rate_element.text.strip()
+            print(f"Extracted rate from page content via BeautifulSoup: {text}")
+            return float(text.replace(',', '.'))
+
+        # Fallback 3: Regex strategies
         rate = extract_rate_from_text(content)
         if rate:
              print(f"Extracted rate from page content via regex: {rate}")
