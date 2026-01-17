@@ -17,7 +17,16 @@ def get_street_rate():
         print(f"Attempting to scrape {URL}...")
         # Headers to mimic a browser
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9,es;q=0.8',
+            'Referer': 'https://www.google.com/',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'cross-site',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
         }
         response = requests.get(URL, headers=headers, timeout=10)
 
@@ -75,9 +84,12 @@ async def get_monzo_rates():
         # Base is GBP
         results['GBP'] = 1.0
 
-        # Target currencies: USD, EUR, AUD, CAD, TWD, JPY, CNY, RUB, BOB
+        # Target currencies: USD, EUR, AUD, CAD, TWD, JPY, CNY, RUB, BOB, NZD, CHF, SGD, HKD, SEK, NOK, DKK, MXN
         # We also need these to be in the final 'official_rates' map.
-        target_currencies = ['USD', 'EUR', 'AUD', 'CAD', 'TWD', 'JPY', 'CNY', 'RUB', 'BOB']
+        target_currencies = [
+            'USD', 'EUR', 'AUD', 'CAD', 'TWD', 'JPY', 'CNY', 'RUB', 'BOB',
+            'NZD', 'CHF', 'SGD', 'HKD', 'SEK', 'NOK', 'DKK', 'MXN'
+        ]
 
         for currency in target_currencies:
             if currency not in available_currencies:
@@ -87,29 +99,6 @@ async def get_monzo_rates():
             print(f"Selecting {currency}...")
 
             # Select the option
-            # We assume the class name hasn't changed. If it has, we might need a more robust selector.
-            # Using the element handle directly might be safer if possible, but page.select takes a selector string.
-            # We can use the class we found earlier 'Select_input__JYjsP' or try to identify it by index.
-            # Or use querySelector on the select handle? No.
-
-            # Use a more robust selector strategy.
-            # We found the second select is the currency switcher.
-            # We can use nth-of-type or the element handle itself.
-            # Since page.select takes a selector string, let's use a robust CSS selector.
-            # "select[role='listbox']" or "main select:nth-of-type(2)" or simply rely on the class if consistent,
-            # but user feedback suggested checking this.
-
-            # Let's try to find a selector that doesn't rely on the hashed class name.
-            # We can use the fact that it is likely the second select element on the page.
-            # (First one was Region).
-
-            # However, Pyppeteer's page.select requires a selector string.
-            # We can try to evaluate a JS function to set the value and dispatch event, but select is easier.
-
-            # Let's verify if there is a more stable attribute.
-            # In the dump we saw: Select: {'class': ('Select_input__JYjsP',), 'role': 'listbox'}
-            # 'role="listbox"' seems good!
-
             try:
                 await page.select('select[role="listbox"]', currency)
             except Exception:
@@ -117,36 +106,32 @@ async def get_monzo_rates():
                  print("Fallback to class selector...")
                  await page.select('select.Select_input__JYjsP', currency)
 
-            # Wait for update.
-            await asyncio.sleep(1.0)
+            # Retry loop for finding the rate
+            found_rate = False
+            for attempt in range(3):
+                # Wait for update.
+                await asyncio.sleep(2.0)
 
-            text_content = await page.evaluate('document.body.innerText')
+                text_content = await page.evaluate('document.body.innerText')
 
-            # We want the Mastercard Rate.
-            # Format: "Mastercard Rate\n1 GBP = X CURRENCY"
-            # We search specifically for the pattern involving the currency code
+                # We want the Mastercard Rate.
+                # Format: "Mastercard Rate\n1 GBP = X CURRENCY"
+                pattern = f"Mastercard Rate.*?1 GBP = ([0-9.]+)\\s+{currency}"
+                match = re.search(pattern, text_content, re.DOTALL)
 
-            # Look for "Mastercard Rate" and then the rate line.
-            # But the rate line is "1 GBP = ...".
-            # The issue with simple regex on whole body is duplicate "1 GBP =" for ECB rate.
-            # We need to ensure it's the one under "Mastercard Rate".
+                if match:
+                    rate = float(match.group(1))
+                    print(f"Rate for {currency}: {rate}")
+                    results[currency] = rate
+                    found_rate = True
+                    break
+                else:
+                    print(f"Attempt {attempt+1}: Rate not found for {currency} (Mastercard Rate context). Retrying...")
 
-            # Let's try to find the text "Mastercard Rate" and extract following text.
-            # Or improved regex:
-            # Mastercard Rate.*?1 GBP = ([0-9.]+)\s+{currency}
-            # using DOTALL
-
-            pattern = f"Mastercard Rate.*?1 GBP = ([0-9.]+)\\s+{currency}"
-            match = re.search(pattern, text_content, re.DOTALL)
-
-            if match:
-                rate = float(match.group(1))
-                print(f"Rate for {currency}: {rate}")
-                results[currency] = rate
-            else:
+            if not found_rate:
                 # Fallback: simple search if Mastercard Rate context fails (unlikely if page structure holds)
                 # But risk getting ECB rate.
-                print(f"Rate not found for {currency} (Mastercard Rate context). Trying simple search...")
+                print(f"Rate not found for {currency} after retries. Trying simple search...")
                 pattern_simple = f"1 GBP = ([0-9.]+)\\s+{currency}"
                 match_simple = re.search(pattern_simple, text_content)
                 if match_simple:
