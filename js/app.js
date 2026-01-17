@@ -41,6 +41,8 @@ window.els = {
     billCurrencyRadios: document.getElementsByName('bill_currency'),
 
     // Toggles
+    themeToggle: document.getElementById('theme-toggle'),
+    themeIcon: document.getElementById('theme-icon'),
     btnToggleCash: document.getElementById('btn-toggle-cash'),
     btnToggleApp: document.getElementById('btn-toggle-app'),
     btnToggleCard: document.getElementById('btn-toggle-card'),
@@ -96,6 +98,7 @@ const SYMBOLS = {
 
 // Initialization
 async function init() {
+    initTheme();
     setupEventListeners();
     updateToggleUI(); // Initialize UI state
 
@@ -110,6 +113,35 @@ async function init() {
     populateInputs();
     updateCurrencyDisplay();
     calculate();
+}
+
+function initTheme() {
+    const theme = localStorage.getItem('theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = theme === 'dark' || (!theme && systemDark);
+
+    if (isDark) {
+        document.documentElement.classList.add('dark');
+        if(els.themeIcon) els.themeIcon.textContent = 'light_mode';
+    } else {
+        document.documentElement.classList.remove('dark');
+        if(els.themeIcon) els.themeIcon.textContent = 'dark_mode';
+    }
+
+    if(els.themeToggle) {
+        els.themeToggle.addEventListener('click', () => {
+            const isCurrentlyDark = document.documentElement.classList.contains('dark');
+            if (isCurrentlyDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                if(els.themeIcon) els.themeIcon.textContent = 'dark_mode';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                if(els.themeIcon) els.themeIcon.textContent = 'light_mode';
+            }
+        });
+    }
 }
 
 function setupEventListeners() {

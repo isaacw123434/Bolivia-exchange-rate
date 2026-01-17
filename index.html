@@ -83,22 +83,29 @@
 <!-- Header -->
 <header class="sticky top-0 z-50 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 px-4 py-4 backdrop-blur-md">
 <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Bolivia Blue Dollar Rate & Travel Money Calculator</h1>
-<!-- Home Currency Select moved to Header -->
-<div class="relative flex items-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors group">
-    <label for="home-currency" class="text-xs font-bold text-slate-500 uppercase mr-1 cursor-pointer">Home:</label>
-    <span class="text-xl" id="flag-icon">🇬🇧</span>
-    <select id="home-currency" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10">
-        <option value="GBP">GBP</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="AUD">AUD</option>
-        <option value="CAD">CAD</option>
-        <option value="TWD">TWD</option>
-        <option value="JPY">JPY</option>
-        <option value="CNY">CNY</option>
-        <option value="RUB">RUB</option>
-    </select>
-    <span class="material-symbols-outlined text-sm text-slate-400 absolute right-2 pointer-events-none group-hover:text-slate-600 transition-colors">expand_more</span>
+<div class="flex items-center gap-2">
+    <!-- Dark Mode Toggle -->
+    <button id="theme-toggle" class="flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle Dark Mode">
+        <span class="material-symbols-outlined text-[20px]" id="theme-icon">dark_mode</span>
+    </button>
+
+    <!-- Home Currency Select moved to Header -->
+    <div class="relative flex items-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors group">
+        <label for="home-currency" class="text-xs font-bold text-slate-500 uppercase mr-1 cursor-pointer">Home:</label>
+        <span class="text-xl" id="flag-icon">🇬🇧</span>
+        <select id="home-currency" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10">
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="AUD">AUD</option>
+            <option value="CAD">CAD</option>
+            <option value="TWD">TWD</option>
+            <option value="JPY">JPY</option>
+            <option value="CNY">CNY</option>
+            <option value="RUB">RUB</option>
+        </select>
+        <span class="material-symbols-outlined text-sm text-slate-400 absolute right-2 pointer-events-none group-hover:text-slate-600 transition-colors">expand_more</span>
+    </div>
 </div>
 </header>
 
