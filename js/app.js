@@ -342,13 +342,37 @@ function processRatesData(data) {
     if ((data.date || data.timestamp) && els.lastUpdated) {
         let dateStr = 'Unknown';
         try {
-            // Try timestamp first
+            let dateObj = null;
+            // 1. Try timestamp
             if (data.timestamp) {
-                dateStr = new Date(data.timestamp * 1000).toLocaleString();
-            } else if (data.date) {
-                // Try parsing date string
-                dateStr = new Date(data.date).toLocaleString();
+                dateObj = new Date(data.timestamp * 1000);
             }
+
+            // 2. If invalid or missing, try date string
+            if ((!dateObj || isNaN(dateObj.getTime())) && data.date) {
+                dateObj = new Date(data.date);
+                // 3. If still invalid, try cleaning date string (strip microseconds)
+                if (isNaN(dateObj.getTime())) {
+                    const fixedDate = data.date.replace(/(\.\d{3})\d+/, '$1');
+                    dateObj = new Date(fixedDate);
+                }
+            }
+
+            if (dateObj && !isNaN(dateObj.getTime())) {
+                dateStr = dateObj.toLocaleString(undefined, {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    timeZoneName: 'short',
+                    hour12: false
+                });
+            } else {
+                throw new Error("Invalid Date generated");
+            }
+
         } catch (e) {
             console.error("Date parsing error", e);
             dateStr = data.date || 'Unknown';
