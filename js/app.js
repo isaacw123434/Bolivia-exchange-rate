@@ -338,10 +338,24 @@ function processRatesData(data) {
     state.cardBobRate = state.rates.BOB || 1;
 
     // Update Last Updated Date
-    if (data.date && els.lastUpdated) {
+    if ((data.date || data.timestamp) && els.lastUpdated) {
+        let dateStr = 'Unknown';
+        try {
+            // Try timestamp first
+            if (data.timestamp) {
+                dateStr = new Date(data.timestamp * 1000).toLocaleString();
+            } else if (data.date) {
+                // Try parsing date string
+                dateStr = new Date(data.date).toLocaleString();
+            }
+        } catch (e) {
+            console.error("Date parsing error", e);
+            dateStr = data.date || 'Unknown';
+        }
+
          els.lastUpdated.innerHTML = `
             <span class="material-symbols-outlined text-[14px]">update</span>
-            <span>Updated: ${data.date}</span>
+            <span>Updated: ${dateStr}</span>
         `;
     }
 }
