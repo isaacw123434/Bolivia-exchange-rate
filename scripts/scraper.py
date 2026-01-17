@@ -16,13 +16,28 @@ async def get_street_rate():
     print(f"Attempting to scrape {URL}...")
     browser = None
     try:
-        browser = await launch(headless=True, args=['--no-sandbox'])
+        # Launch browser with arguments optimized for CI/Container environments
+        browser = await launch(
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
+            ]
+        )
         page = await browser.newPage()
 
         # Headers to mimic a browser
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
+        # Updated to Chrome 120
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
 
-        await page.goto(URL, {'waitUntil': 'domcontentloaded', 'timeout': 30000})
+        # Use networkidle2 to ensure page is settled
+        await page.goto(URL, {'waitUntil': 'networkidle2', 'timeout': 60000})
 
         # Wait for the selector to appear
         selector = '#dolar-libre-buy'
@@ -30,9 +45,27 @@ async def get_street_rate():
             await page.waitForSelector(selector, {'timeout': 60000})
         except Exception:
             print("Timeout waiting for selector.")
-            return None
+            # Attempt fallback
+            print("Attempting fallback selector...")
+            fallback_selector = '.main-card-rate-value'
+            try:
+                await page.waitForSelector(fallback_selector, {'timeout': 10000})
+                selector = fallback_selector
+                print("Fallback selector found.")
+            except Exception:
+                print("Fallback selector failed.")
+                try:
+                    content = await page.content()
+                    with open("failed_scrape_dump.html", "w") as f:
+                        f.write(content)
+                    print("Dumped content to failed_scrape_dump.html")
+                except Exception as e:
+                    print(f"Error dumping content: {e}")
+                return None
 
         element = await page.querySelector(selector)
+        # If using class selector, querySelector returns the first one, which is 'Compra' rate.
+
         if element:
             text = await page.evaluate('(element) => element.textContent', element)
             text = text.strip()
@@ -55,7 +88,20 @@ async def get_monzo_rates():
     results = {}
     browser = None
     try:
-        browser = await launch(headless=True, args=['--no-sandbox'])
+        # Launch browser with arguments optimized for CI/Container environments
+        browser = await launch(
+            headless=True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
+            ]
+        )
         page = await browser.newPage()
 
         print("Navigating to https://monzo.com/ecb-rates ...")
