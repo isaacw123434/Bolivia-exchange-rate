@@ -2,7 +2,7 @@
 <html class="light" lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Bolivia Blue Dollar Calculator & Exchange Rate</title>
 <meta name="description" content="Calculate best payment methods in Bolivia. Compare Blue Dollar rates vs Credit Cards & Apps to save money.">
@@ -164,7 +164,7 @@
             <label for="home-currency" class="text-sm font-bold text-slate-500 uppercase mr-1 cursor-pointer">Home Currency:</label>
             <span class="text-xl" id="flag-icon">🇬🇧</span>
             <div class="relative flex items-center">
-                <select id="home-currency" style="background-image: none;" class="appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10 relative">
+                <select id="home-currency" class="bg-none appearance-none bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 cursor-pointer pr-6 py-0 outline-none w-auto z-10 relative">
                     <option value="GBP">GBP</option>
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
@@ -360,13 +360,5 @@
 <div class="pointer-events-none fixed bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent z-40 max-w-md mx-auto"></div>
 </div>
 <script src="js/app.js" defer></script>
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('SW Registered!', reg.scope))
-            .catch(err => console.log('SW Failed:', err));
-    });
-}
-</script>
+<script src="js/sw-register.js"></script>
 </body></html>
