@@ -1,0 +1,15 @@
+# Bolivia Blue Dollar Calculator & Exchange Rate
+
+> This project provides a web-based calculator to compare official and "Blue Dollar" exchange rates in Bolivia. It helps travelers decide whether to use cash, credit cards, or money transfer apps.
+
+## Documentation
+
+- [README](README.md): Project overview, setup instructions, and structure.
+
+## Source Code
+
+- [Main Logic](js/app.js): Frontend JavaScript logic for the calculator.
+- [Service Worker](sw.js): Service Worker for offline capabilities.
+- [Scraper](scripts/scraper.py): Python script used to fetch the latest street exchange rates and official rates.
+- [Data](data/rates.json): JSON file storing the latest exchange rates used by the application.
+- [HTML](index.html): The main entry point for the web application.
