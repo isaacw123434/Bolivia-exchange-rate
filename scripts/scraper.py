@@ -1,6 +1,7 @@
 import asyncio
 from pyppeteer import launch
 import requests
+from bs4 import BeautifulSoup
 import re
 import json
 import sys
@@ -68,9 +69,20 @@ def get_street_rate_simple():
         response = requests.get(URL, headers=BROWSER_HEADERS, timeout=15)
         response.raise_for_status()
 
+        # Strategy 1: Use BeautifulSoup as requested
+        soup = BeautifulSoup(response.text, 'html.parser')
+        buy_rate_element = soup.find(id="dolar-libre-buy")
+
+        if buy_rate_element:
+            text = buy_rate_element.text.strip()
+            print(f"Successfully scraped street rate with BeautifulSoup: {text}")
+            return float(text.replace(',', '.'))
+
+        print("BeautifulSoup failed to find element with id='dolar-libre-buy'. Falling back to regex strategies...")
+
         rate = extract_rate_from_text(response.text)
         if rate:
-            print(f"Successfully extracted street rate via requests: {rate}")
+            print(f"Successfully extracted street rate via requests (fallback regex): {rate}")
             return rate
         else:
             print("Could not find rate in HTML via regex/strategies.")
