@@ -178,6 +178,17 @@ def update_index_html(timestamp, filepath='index.html'):
 
         content = re.sub(desc_pattern, desc_replacer, content, count=1, flags=re.DOTALL)
 
+        # Update Body Last Updated Date
+        # Regex to find the span inside the last-updated div
+        # Matches: <div id="last-updated"[^>]*>.*?<span>ANYTHING</span>
+        body_pattern = r'(<div id="last-updated"[^>]*>.*?<span>)(.*?)(</span>)'
+
+        def body_replacer(match):
+            start_tag, inner_text, end_tag = match.groups()
+            return f'{start_tag}Updated: {date_str}{end_tag}'
+
+        content = re.sub(body_pattern, body_replacer, content, count=1, flags=re.DOTALL)
+
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(content)
 

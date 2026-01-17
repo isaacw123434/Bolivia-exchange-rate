@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: ClaudeBot
 Allow: /
+
+Sitemap: https://boliviatravelmoney.site/sitemap.xml
