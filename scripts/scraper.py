@@ -22,12 +22,12 @@ async def get_street_rate():
         # Headers to mimic a browser
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
 
-        await page.goto(URL, {'waitUntil': 'networkidle0', 'timeout': 30000})
+        await page.goto(URL, {'waitUntil': 'domcontentloaded', 'timeout': 30000})
 
         # Wait for the selector to appear
         selector = '#dolar-libre-buy'
         try:
-            await page.waitForSelector(selector, {'timeout': 10000})
+            await page.waitForSelector(selector, {'timeout': 60000})
         except Exception:
             print("Timeout waiting for selector.")
             return None
