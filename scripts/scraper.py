@@ -143,14 +143,23 @@ def update_sitemap(timestamp, filepath='sitemap.xml'):
     """Generates a sitemap.xml with the current date as lastmod."""
     date_str = timestamp.strftime("%Y-%m-%d")
 
-    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    # List all your supported languages here
+    # Adding trailing slash for directories is standard for folder-based URLs
+    langs = ['', 'es/', 'pt/', 'he/', 'fr/', 'de/', 'zh/', 'ko/']
+
+    url_entries = ""
+    for lang in langs:
+        url_entries += f"""
   <url>
-    <loc>https://boliviatravelmoney.site/</loc>
+    <loc>https://boliviatravelmoney.site/{lang}</loc>
     <lastmod>{date_str}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
+    <priority>{'1.0' if lang == '' else '0.8'}</priority>
+  </url>"""
+
+    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{url_entries}
 </urlset>"""
 
     try:
@@ -295,8 +304,12 @@ def main():
             json.dump(data, f, indent=2)
         print(f"Saved data to {output_file}")
 
-        # Update HTML
-        update_index_html(now)
+        # Update HTML files (root + languages)
+        languages = ['es', 'pt', 'he', 'fr', 'de', 'zh', 'ko']
+        files_to_update = ['index.html'] + [f'{lang}/index.html' for lang in languages]
+
+        for filepath in files_to_update:
+            update_index_html(now, filepath=filepath)
 
         # Update Sitemap
         update_sitemap(now)
