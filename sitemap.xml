@@ -1,9 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://boliviatravelmoney.site/</loc>
     <lastmod>2026-01-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/es/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/pt/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/he/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/fr/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/de/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/zh/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
+  </url>
+  <url>
+    <loc>https://boliviatravelmoney.site/ko/</loc>
+    <lastmod>2026-01-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boliviatravelmoney.site/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://boliviatravelmoney.site/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://boliviatravelmoney.site/pt/"/>
+    <xhtml:link rel="alternate" hreflang="he" href="https://boliviatravelmoney.site/he/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://boliviatravelmoney.site/fr/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://boliviatravelmoney.site/de/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://boliviatravelmoney.site/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://boliviatravelmoney.site/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boliviatravelmoney.site/"/>
   </url>
 </urlset>
