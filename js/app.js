@@ -161,7 +161,7 @@ async function init() {
             else if (userLang.startsWith('he')) window.location.replace('/he/');
             else if (userLang.startsWith('fr')) window.location.replace('/fr/');
             else if (userLang.startsWith('de')) window.location.replace('/de/');
-            else if (userLang.startsWith('zh')) window.location.replace('/zh/');
+            else if (userLang.startsWith('zh')) window.location.replace('/zh-CN/');
             else if (userLang.startsWith('ko')) window.location.replace('/ko/');
         }
     }

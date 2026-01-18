@@ -46,7 +46,7 @@ def main():
             'months_long': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
             'days_long': ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         },
-        'zh': {
+        'zh-CN': {
             'months_short': ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
             'months_long': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
             'days_long': ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
@@ -82,18 +82,34 @@ def main():
         # Localize date
         locale = LOCALE_DATA.get(lang_code, LOCALE_DATA['en'])
 
-        # %d %b %Y
         day = now.day
         month_idx = now.month - 1
         year = now.year
-        short_month = locale['months_short'][month_idx]
-        current_date = f"{day} {short_month} {year}"
-
-        # %A, %B %d, %Y
         weekday_idx = now.weekday()
-        long_day = locale['days_long'][weekday_idx]
+
+        short_month = locale['months_short'][month_idx]
         long_month = locale['months_long'][month_idx]
-        current_date_long = f"{long_day}, {long_month} {day}, {year}"
+        long_day = locale['days_long'][weekday_idx]
+
+        # Use format strings from translations.json, fallback to defaults if missing
+        date_short_fmt = trans_data.get('date_short', "{day} {short_month} {year}")
+        date_long_fmt = trans_data.get('date_long', "{long_day}, {long_month} {day}, {year}")
+
+        current_date = date_short_fmt.format(
+            day=day,
+            short_month=short_month,
+            year=year,
+            long_day=long_day,
+            long_month=long_month
+        )
+
+        current_date_long = date_long_fmt.format(
+            day=day,
+            short_month=short_month,
+            year=year,
+            long_day=long_day,
+            long_month=long_month
+        )
 
         # Prepare context
         context = {

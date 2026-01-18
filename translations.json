@@ -57,7 +57,9 @@
             "using": "Using",
             "avoid": "Avoid",
             "save": "You save"
-        }
+        },
+        "date_short": "{day} {short_month} {year}",
+        "date_long": "{long_day}, {long_month} {day}, {year}"
     },
     "es": {
         "lang_code": "es",
@@ -117,7 +119,9 @@
             "using": "Usando",
             "avoid": "Evitar",
             "save": "Ahorras"
-        }
+        },
+        "date_short": "{day} de {short_month} de {year}",
+        "date_long": "{long_day}, {day} de {long_month} de {year}"
     },
     "pt": {
         "lang_code": "pt",
@@ -177,7 +181,9 @@
             "using": "Usando",
             "avoid": "Evitar",
             "save": "Você economiza"
-        }
+        },
+        "date_short": "{day} de {short_month} de {year}",
+        "date_long": "{long_day}, {day} de {long_month} de {year}"
     },
     "he": {
         "lang_code": "he",
@@ -237,7 +243,9 @@
             "using": "באמצעות",
             "avoid": "הימנע",
             "save": "אתה חוסך"
-        }
+        },
+        "date_short": "{day} {short_month} {year}",
+        "date_long": "{long_day}, {day} {long_month} {year}"
     },
     "fr": {
         "lang_code": "fr",
@@ -297,7 +305,9 @@
             "using": "Avec",
             "avoid": "Éviter",
             "save": "Vous économisez"
-        }
+        },
+        "date_short": "{day} {short_month} {year}",
+        "date_long": "{long_day} {day} {long_month} {year}"
     },
     "de": {
         "lang_code": "de",
@@ -357,67 +367,9 @@
             "using": "Mit",
             "avoid": "Vermeiden",
             "save": "Sie sparen"
-        }
-    },
-    "zh": {
-        "lang_code": "zh",
-        "meta_title": "玻利维亚蓝美元计算器",
-        "meta_description": "计算在玻利维亚的最佳支付方式。比较蓝美元汇率与信用卡及应用程序。",
-        "og_title": "玻利维亚蓝美元计算器",
-        "og_description": "计算在玻利维亚支付的最佳方式。比较蓝美元汇率与信用卡及汇款应用程序。",
-        "header_title": "玻利维亚蓝美元汇率及旅游资金计算器",
-        "intro_text": "查看玻利维亚物品的真实成本。输入任何玻利维亚诺 (BOB) 或美元 (USD) 金额，即时查看使用现金、卡或转账应用程序时以您的本国货币计算的真实成本。找出哪种支付方式最省钱。",
-        "bill_total_label": "账单总额",
-        "payment_methods_title": "💳 玻利维亚的支付方式",
-        "method_cash_title": "美元街头兑换",
-        "method_cash_desc": "实物美元钞票",
-        "method_app_title": "汇款应用程序",
-        "method_app_desc": "Wise/Remitly/WU",
-        "method_card_title": "信用卡/借记卡",
-        "method_card_desc": "银行卡",
-        "home_currency_label": "本国货币：",
-        "rates_section_title": "📊 当前蓝美元及官方汇率",
-        "updated_label": "更新于：",
-        "street_exchange_box_title": "街头兑换",
-        "label_street_rate": "街头汇率 (USD → BOB)",
-        "label_home_to_usd": "本国货币 → USD",
-        "app_transfer_box_title": "汇款应用",
-        "label_app_rate": "汇款应用 本国 → BOB",
-        "label_transfer_fee": "汇款手续费",
-        "card_box_title": "银行卡",
-        "label_bank_fee": "国际交易费：",
-        "label_official_rate": "官方汇率 (本国 → BOB)",
-        "label_official_usd_rate": "官方美元汇率 (USD → BOB)",
-        "results_title": "所有选项",
-        "atm_trap_title": "ATM 陷阱及限制",
-        "atm_trap_text": "警告：ATM 使用官方银行汇率（约 6.96 BOB），这意味着与街头汇率相比，您会损失约 40% 的价值。如果您必须使用 ATM，每笔交易的限额通常为 1,500 – 2,000 BOB。务必提取允许的最大金额，以此抵消固定的境外交易费。",
-        "paypal_hack_title": "PayPal / Xoom 技巧",
-        "paypal_hack_text": "现金不足？使用 Xoom（PayPal 旗下）给自己汇款。选择“现金提取”作为交付方式，并在 Banco FIE 等合作伙伴网点领取。汇款前务必检查 Xoom 提供的汇率——通常比 ATM 汇率好，但低于街头汇率。",
-        "faq_title": "常见问题",
-        "faq_q1": "什么是玻利维亚的蓝美元？",
-        "faq_a1": "“蓝美元”是玻利维亚美元的非官方汇率。由于货币管制和美元短缺，出现了一个平行市场，美元的街头价值大大高于银行合法提供的价值。",
-        "faq_q2": "在玻利维亚应该用信用卡还是现金？",
-        "faq_a2": "使用以蓝美元汇率兑换的现金通常最划算。信用卡通常会按官方政府汇率收费，您的银行可能还会在此基础上加收境外交易费。这可能导致一切比使用按蓝汇率兑换的现金支付贵 20% 到 40%。",
-        "faq_q3": "如何在拉巴斯/苏克雷获得最佳汇率？",
-        "faq_a3": "要获得最佳汇率，请带上崭新的 100 美元钞票。较小面额的钞票（20、50）通常汇率较低。在“Casas de Cambio”（兑换处）或信誉良好的街头兑换商处兑换。在拉巴斯，卡马乔大道（Avenida Camacho）是一个热门地点。在苏克雷，可在中央市场附近寻找。",
-        "faq_q4": "在街上换钱安全吗？",
-        "faq_a4": "是的，在繁忙、知名的地区通常是安全的，但对于较大金额，建议使用成熟的兑换处（Casas de Cambio）以获得更好的安全性。处理现金时务必留意周围环境，并在离开柜台前务必检查水印以识别假钞。",
-        "resources_title": "有用资源",
-        "resource_dolarbo_desc": "查看当前玻利维亚蓝美元汇率",
-        "resource_mastercard_desc": "万事达卡官方汇率计算器",
-        "disclaimer": "汇率仅为估算值，仅供参考。'蓝美元'是一个不受监管的市场；汇率因街角和谈判者而异。我们要不对财务损失负责。",
-        "ui": {
-            "cashTitle": "街头兑换",
-            "cashDesc": "美元街头兑换",
-            "appTitle": "汇款应用程序",
-            "cardBobTitle": "银行卡 (BOB)",
-            "cardUsdTitle": "银行卡 (USD)",
-            "cardDesc": "银行换汇",
-            "cheapest": "最便宜的选项",
-            "using": "使用",
-            "avoid": "避免",
-            "save": "您节省了"
-        }
+        },
+        "date_short": "{day}. {short_month} {year}",
+        "date_long": "{long_day}, {day}. {long_month} {year}"
     },
     "ko": {
         "lang_code": "ko",
@@ -477,6 +429,70 @@
             "using": "사용",
             "avoid": "피하기",
             "save": "절약 금액"
-        }
+        },
+        "date_short": "{year}년 {short_month} {day}일",
+        "date_long": "{year}년 {short_month} {day}일 {long_day}"
+    },
+    "zh-CN": {
+        "lang_code": "zh-CN",
+        "meta_title": "玻利维亚蓝美元计算器",
+        "meta_description": "计算在玻利维亚的最佳支付方式。比较蓝美元汇率与信用卡及应用程序。",
+        "og_title": "玻利维亚蓝美元计算器",
+        "og_description": "计算在玻利维亚支付的最佳方式。比较蓝美元汇率与信用卡及汇款应用程序。",
+        "header_title": "玻利维亚蓝美元汇率及旅游资金计算器",
+        "intro_text": "查看玻利维亚物品的真实成本。输入任何玻利维亚诺 (BOB) 或美元 (USD) 金额，即时查看使用现金、卡或转账应用程序时以您的本国货币计算的真实成本。找出哪种支付方式最省钱。",
+        "bill_total_label": "账单总额",
+        "payment_methods_title": "💳 玻利维亚的支付方式",
+        "method_cash_title": "美元街头兑换",
+        "method_cash_desc": "实物美元钞票",
+        "method_app_title": "汇款应用程序",
+        "method_app_desc": "Wise/Remitly/WU",
+        "method_card_title": "信用卡/借记卡",
+        "method_card_desc": "银行卡",
+        "home_currency_label": "本国货币：",
+        "rates_section_title": "📊 当前蓝美元及官方汇率",
+        "updated_label": "更新于：",
+        "street_exchange_box_title": "街头兑换",
+        "label_street_rate": "街头汇率 (USD → BOB)",
+        "label_home_to_usd": "本国货币 → USD",
+        "app_transfer_box_title": "汇款应用",
+        "label_app_rate": "汇款应用 本国 → BOB",
+        "label_transfer_fee": "汇款手续费",
+        "card_box_title": "银行卡",
+        "label_bank_fee": "国际交易费：",
+        "label_official_rate": "官方汇率 (本国 → BOB)",
+        "label_official_usd_rate": "官方美元汇率 (USD → BOB)",
+        "results_title": "所有选项",
+        "atm_trap_title": "ATM 陷阱及限制",
+        "atm_trap_text": "警告：ATM 使用官方银行汇率（约 6.96 BOB），这意味着与街头汇率相比，您会损失约 40% 的价值。如果您必须使用 ATM，每笔交易的限额通常为 1,500 – 2,000 BOB。务必提取允许的最大金额，以此抵消固定的境外交易费。",
+        "paypal_hack_title": "PayPal / Xoom 技巧",
+        "paypal_hack_text": "现金不足？使用 Xoom（PayPal 旗下）给自己汇款。选择“现金提取”作为交付方式，并在 Banco FIE 等合作伙伴网点领取。汇款前务必检查 Xoom 提供的汇率——通常比 ATM 汇率好，但低于街头汇率。",
+        "faq_title": "常见问题",
+        "faq_q1": "什么是玻利维亚的蓝美元？",
+        "faq_a1": "“蓝美元”是玻利维亚美元的非官方汇率。由于货币管制和美元短缺，出现了一个平行市场，美元的街头价值大大高于银行合法提供的价值。",
+        "faq_q2": "在玻利维亚应该用信用卡还是现金？",
+        "faq_a2": "使用以蓝美元汇率兑换的现金通常最划算。信用卡通常会按官方政府汇率收费，您的银行可能还会在此基础上加收境外交易费。这可能导致一切比使用按蓝汇率兑换的现金支付贵 20% 到 40%。",
+        "faq_q3": "如何在拉巴斯/苏克雷获得最佳汇率？",
+        "faq_a3": "要获得最佳汇率，请带上崭新的 100 美元钞票。较小面额的钞票（20、50）通常汇率较低。在“Casas de Cambio”（兑换处）或信誉良好的街头兑换商处兑换。在拉巴斯，卡马乔大道（Avenida Camacho）是一个热门地点。在苏克雷，可在中央市场附近寻找。",
+        "faq_q4": "在街上换钱安全吗？",
+        "faq_a4": "是的，在繁忙、知名的地区通常是安全的，但对于较大金额，建议使用成熟的兑换处（Casas de Cambio）以获得更好的安全性。处理现金时务必留意周围环境，并在离开柜台前务必检查水印以识别假钞。",
+        "resources_title": "有用资源",
+        "resource_dolarbo_desc": "查看当前玻利维亚蓝美元汇率",
+        "resource_mastercard_desc": "万事达卡官方汇率计算器",
+        "disclaimer": "汇率仅为估算值，仅供参考。'蓝美元'是一个不受监管的市场；汇率因街角和谈判者而异。我们要不对财务损失负责。",
+        "ui": {
+            "cashTitle": "街头兑换",
+            "cashDesc": "美元街头兑换",
+            "appTitle": "汇款应用程序",
+            "cardBobTitle": "银行卡 (BOB)",
+            "cardUsdTitle": "银行卡 (USD)",
+            "cardDesc": "银行换汇",
+            "cheapest": "最便宜的选项",
+            "using": "使用",
+            "avoid": "避免",
+            "save": "您节省了"
+        },
+        "date_short": "{year}年{short_month}{day}日",
+        "date_long": "{year}年{short_month}{day}日 {long_day}"
     }
 }
