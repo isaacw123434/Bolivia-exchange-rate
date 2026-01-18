@@ -1,119 +1,18 @@
 
-// 1. Translation Dictionary
-const TRANSLATIONS = {
-    en: {
-        cashTitle: "Street exchange",
-        cashDesc: "USD street exchange",
-        appTitle: "Money Transfer App",
-        cardBobTitle: "Card (in BOB)",
-        cardUsdTitle: "Card (in USD)",
-        cardDesc: "Bank Conversion",
-        cheapest: "Cheapest Option",
-        using: "Using",
-        avoid: "Avoid",
-        save: "You save"
-    },
-    es: {
-        cashTitle: "Cambio callejero",
-        cashDesc: "Cambio de dólares físicos",
-        appTitle: "Aplicación de giros",
-        cardBobTitle: "Tarjeta (en BOB)",
-        cardUsdTitle: "Tarjeta (en USD)",
-        cardDesc: "Conversión bancaria",
-        cheapest: "Mejor Opción",
-        using: "Usando",
-        avoid: "Evitar",
-        save: "Ahorras"
-    },
-    pt: {
-        cashTitle: "Câmbio de rua",
-        cashDesc: "Câmbio de USD físico",
-        appTitle: "App de Transferência",
-        cardBobTitle: "Cartão (em BOB)",
-        cardUsdTitle: "Cartão (em USD)",
-        cardDesc: "Conversão bancária",
-        cheapest: "Melhor Opção",
-        using: "Usando",
-        avoid: "Evitar",
-        save: "Você economiza"
-    },
-    he: {
-        cashTitle: "החלפה ברחוב",
-        cashDesc: "החלפת דולר מזומן",
-        appTitle: "אפליקציית העברות",
-        cardBobTitle: "כרטיס (ב-BOB)",
-        cardUsdTitle: "כרטיס (ב-USD)",
-        cardDesc: "המרת בנק",
-        cheapest: "האפשרות הזולה ביותר",
-        using: "באמצעות",
-        avoid: "הימנע",
-        save: "אתה חוסך"
-    },
-    fr: {
-        cashTitle: "Street exchange",
-        cashDesc: "USD street exchange",
-        appTitle: "Money Transfer App",
-        cardBobTitle: "Card (in BOB)",
-        cardUsdTitle: "Card (in USD)",
-        cardDesc: "Bank Conversion",
-        cheapest: "Cheapest Option",
-        using: "Using",
-        avoid: "Avoid",
-        save: "You save"
-    },
-    de: {
-        cashTitle: "Street exchange",
-        cashDesc: "USD street exchange",
-        appTitle: "Money Transfer App",
-        cardBobTitle: "Card (in BOB)",
-        cardUsdTitle: "Card (in USD)",
-        cardDesc: "Bank Conversion",
-        cheapest: "Cheapest Option",
-        using: "Using",
-        avoid: "Avoid",
-        save: "You save"
-    },
-    zh: {
-        cashTitle: "Street exchange",
-        cashDesc: "USD street exchange",
-        appTitle: "Money Transfer App",
-        cardBobTitle: "Card (in BOB)",
-        cardUsdTitle: "Card (in USD)",
-        cardDesc: "Bank Conversion",
-        cheapest: "Cheapest Option",
-        using: "Using",
-        avoid: "Avoid",
-        save: "You save"
-    },
-    ko: {
-        cashTitle: "Street exchange",
-        cashDesc: "USD street exchange",
-        appTitle: "Money Transfer App",
-        cardBobTitle: "Card (in BOB)",
-        cardUsdTitle: "Card (in USD)",
-        cardDesc: "Bank Conversion",
-        cheapest: "Cheapest Option",
-        using: "Using",
-        avoid: "Avoid",
-        save: "You save"
-    }
+const currentLang = document.documentElement.lang || 'en';
+const t = window.UI_STRINGS || {
+    // Fallback in case loading fails or dev mode
+    cashTitle: "Street exchange",
+    cashDesc: "USD street exchange",
+    appTitle: "Money Transfer App",
+    cardBobTitle: "Card (in BOB)",
+    cardUsdTitle: "Card (in USD)",
+    cardDesc: "Bank Conversion",
+    cheapest: "Cheapest Option",
+    using: "Using",
+    avoid: "Avoid",
+    save: "You save"
 };
-
-// 2. Detect Language
-function getCurrentLang() {
-    const path = window.location.pathname;
-    if (path.includes('/es/')) return 'es';
-    if (path.includes('/pt/')) return 'pt';
-    if (path.includes('/he/')) return 'he';
-    if (path.includes('/fr/')) return 'fr';
-    if (path.includes('/de/')) return 'de';
-    if (path.includes('/zh/')) return 'zh';
-    if (path.includes('/ko/')) return 'ko';
-    return 'en';
-}
-
-const currentLang = getCurrentLang();
-const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
 // Defaults
 const DEFAULTS = {
