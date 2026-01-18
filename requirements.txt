@@ -1,2 +1,3 @@
 requests
 pyppeteer
+jinja2
