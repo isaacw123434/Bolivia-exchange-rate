@@ -1,0 +1,9 @@
+127.0.0.1 - - [18/Jan/2026 14:51:43] "GET /es/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:43] "GET /static/output.css HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:43] "GET /js/sw-register.js HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:43] "GET /js/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:44] "GET /data/rates.json HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:44] "GET /sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:44] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Jan/2026 14:51:46] "GET /he/index.html HTTP/1.1" 200 -

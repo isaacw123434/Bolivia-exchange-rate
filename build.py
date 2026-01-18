@@ -19,9 +19,49 @@ def main():
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template(TEMPLATE_FILE)
 
-    # Common data
-    current_date = datetime.now().strftime("%d %b %Y")
-    current_date_long = datetime.now().strftime("%A, %B %d, %Y")
+# Locale Data
+    LOCALE_DATA = {
+        'en': {
+            'months_short': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'months_long': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            'days_long': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        },
+        'es': {
+            'months_short': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            'months_long': ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            'days_long': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+        },
+        'pt': {
+            'months_short': ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            'months_long': ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            'days_long': ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo']
+        },
+        'fr': {
+            'months_short': ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+            'months_long': ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+            'days_long': ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+        },
+        'de': {
+            'months_short': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+            'months_long': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+            'days_long': ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
+        },
+        'zh': {
+            'months_short': ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            'months_long': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            'days_long': ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+        },
+        'ko': {
+            'months_short': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            'months_long': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            'days_long': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+        },
+        'he': {
+            'months_short': ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'],
+            'months_long': ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
+            'days_long': ['יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת', 'יום ראשון']
+        }
+    }
 
     # Prepare languages list for hreflang
     languages_list = []
@@ -34,9 +74,26 @@ def main():
 
     # Generate pages
     sitemap_urls = []
+    now = datetime.now()
 
     for lang_code, trans_data in translations.items():
         print(f"Generating {lang_code}...")
+
+        # Localize date
+        locale = LOCALE_DATA.get(lang_code, LOCALE_DATA['en'])
+
+        # %d %b %Y
+        day = now.day
+        month_idx = now.month - 1
+        year = now.year
+        short_month = locale['months_short'][month_idx]
+        current_date = f"{day} {short_month} {year}"
+
+        # %A, %B %d, %Y
+        weekday_idx = now.weekday()
+        long_day = locale['days_long'][weekday_idx]
+        long_month = locale['months_long'][month_idx]
+        current_date_long = f"{long_day}, {long_month} {day}, {year}"
 
         # Prepare context
         context = {
