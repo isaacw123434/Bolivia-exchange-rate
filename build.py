@@ -75,6 +75,7 @@ def main():
     # Generate pages
     sitemap_urls = []
     now = datetime.now()
+    now_iso = now.astimezone().isoformat()
 
     for lang_code, trans_data in translations.items():
         print(f"Generating {lang_code}...")
@@ -116,6 +117,7 @@ def main():
             "lang_code": lang_code,
             "current_date": current_date,
             "current_date_long": current_date_long,
+            "date_modified": now_iso,
             "canonical_url": f"{BASE_URL}/" if lang_code == 'en' else f"{BASE_URL}/{lang_code}/",
             "languages": languages_list,
             **trans_data  # Unpack translations

@@ -139,115 +139,6 @@ async def get_monzo_rates():
 
     return results
 
-def update_sitemap(timestamp, filepath='sitemap.xml'):
-    """Generates a sitemap.xml with the current date as lastmod."""
-    date_str = timestamp.strftime("%Y-%m-%d")
-
-    # List all your supported languages here
-    # Adding trailing slash for directories is standard for folder-based URLs
-    langs = ['', 'es/', 'pt/', 'he/', 'fr/', 'de/', 'zh-CN/', 'ko/']
-
-    url_entries = ""
-    for lang in langs:
-        url_entries += f"""
-  <url>
-    <loc>https://boliviatravelmoney.site/{lang}</loc>
-    <lastmod>{date_str}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>{'1.0' if lang == '' else '0.8'}</priority>
-  </url>"""
-
-    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{url_entries}
-</urlset>"""
-
-    try:
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(sitemap_content)
-        print(f"Successfully generated {filepath}")
-    except Exception as e:
-        print(f"Error generating sitemap: {e}")
-
-def update_index_html(timestamp, filepath='index.html'):
-    """Updates the index.html title, description, schema, and revised tag with the current date."""
-    if not os.path.exists(filepath):
-        print(f"Warning: {filepath} not found. Skipping HTML update.")
-        return
-
-    try:
-        date_str = timestamp.strftime("%d %b %Y")
-        print(f"Updating {filepath} with date: {date_str}")
-
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        # Update Title
-        # Regex to capture content inside <title>
-        # We use capturing groups to keep tags
-        title_pattern = r'(<title>)(.*?)(</title>)'
-
-        def title_replacer(match):
-            start_tag, inner_text, end_tag = match.groups()
-            # Remove existing date suffix if present (e.g., " - 17 Jan 2026")
-            # Pattern: space dash space digit(1-2) space word(3) space digit(4)
-            clean_text = re.sub(r' - \d{1,2} [A-Za-z]{3} \d{4}$', '', inner_text)
-            return f'{start_tag}{clean_text} - {date_str}{end_tag}'
-
-        content = re.sub(title_pattern, title_replacer, content, count=1, flags=re.DOTALL)
-
-        # Update Description
-        # Regex to capture content attribute in meta description
-        desc_pattern = r'(<meta\s+name="description"\s+content=")(.*?)(")'
-
-        def desc_replacer(match):
-            start_attr, inner_text, end_attr = match.groups()
-            # Remove existing date prefix if present (e.g., "Updated 17 Jan 2026. ")
-            clean_text = re.sub(r'^Updated \d{1,2} [A-Za-z]{3} \d{4}\. ', '', inner_text)
-            return f'{start_attr}Updated {date_str}. {clean_text}{end_attr}'
-
-        content = re.sub(desc_pattern, desc_replacer, content, count=1, flags=re.DOTALL)
-
-        # Update Body Last Updated Date
-        # Regex to find the span inside the last-updated div
-        # Matches: <div id="last-updated"[^>]*>.*?<span>ANYTHING</span>
-        body_pattern = r'(<div id="last-updated"[^>]*>.*?<span>)(.*?)(</span>)'
-
-        def body_replacer(match):
-            start_tag, inner_text, end_tag = match.groups()
-            return f'{start_tag}Updated: {date_str}{end_tag}'
-
-        content = re.sub(body_pattern, body_replacer, content, count=1, flags=re.DOTALL)
-
-        # Update JSON-LD dateModified
-        # Regex to find the SoftwareApplication schema and add/update dateModified
-        # We look for "SoftwareApplication" schema which is identified by applicationCategory
-        schema_pattern = r'("applicationCategory":\s*"FinanceApplication",)'
-
-        # Remove old dateModified if exists
-        content = re.sub(r'"dateModified":\s*".*?",\s*', '', content)
-
-        def schema_replacer(match):
-            # Inject the dateModified field right after the category
-            return f'{match.group(1)}\n  "dateModified": "{timestamp.isoformat()}",'
-
-        content = re.sub(schema_pattern, schema_replacer, content, count=1)
-
-        # Update Revised Meta Tag
-        revised_pattern = r'(<meta name="revised" content=")(.*?)(" />)'
-        def revised_replacer(match):
-             start, _, end = match.groups()
-             return f'{start}{timestamp.strftime("%A, %B %d, %Y")}{end}'
-
-        content = re.sub(revised_pattern, revised_replacer, content, count=1)
-
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(content)
-
-        print(f"Successfully updated {filepath}")
-    except Exception as e:
-        print(f"Error updating HTML: {e}")
-
 def main():
     cached_data = None
     output_file = 'data/rates.json'
@@ -305,14 +196,16 @@ def main():
         print(f"Saved data to {output_file}")
 
         # Update HTML files (root + languages)
-        languages = ['es', 'pt', 'he', 'fr', 'de', 'zh-CN', 'ko']
-        files_to_update = ['index.html'] + [f'{lang}/index.html' for lang in languages]
+        # languages = ['es', 'pt', 'he', 'fr', 'de', 'zh-CN', 'ko']
+        # files_to_update = ['index.html'] + [f'{lang}/index.html' for lang in languages]
 
-        for filepath in files_to_update:
-            update_index_html(now, filepath=filepath)
+        # for filepath in files_to_update:
+        #     update_index_html(now, filepath=filepath)
 
         # Update Sitemap
-        update_sitemap(now)
+        # update_sitemap(now)
+
+        print("Scraping complete. Site build should follow.")
 
     except Exception as e:
         print(f"Error saving file: {e}")
