@@ -136,6 +136,7 @@ const SYMBOLS = {
 async function init() {
     initEls();
     initTheme();
+    initCurrency();
     setupEventListeners();
     updateToggleUI(); // Initialize UI state
 
@@ -194,6 +195,14 @@ function initTheme() {
     });
 }
 
+function initCurrency() {
+    const stored = localStorage.getItem('homeCurrency');
+    if (stored && FLAGS[stored]) {
+        state.homeCurrency = stored;
+        if(els.homeCurrency) els.homeCurrency.value = stored;
+    }
+}
+
 function setupEventListeners() {
     // Bill Amount
     els.billAmount.addEventListener('input', (e) => {
@@ -215,6 +224,7 @@ function setupEventListeners() {
     // Home Currency
     els.homeCurrency.addEventListener('change', async (e) => {
         state.homeCurrency = e.target.value;
+        localStorage.setItem('homeCurrency', state.homeCurrency);
         updateCurrencyDisplay();
         await fetchRates(); // Fetch new rates for the new base
         populateInputs();
