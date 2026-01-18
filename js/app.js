@@ -1,4 +1,120 @@
 
+// 1. Translation Dictionary
+const TRANSLATIONS = {
+    en: {
+        cashTitle: "Street exchange",
+        cashDesc: "USD street exchange",
+        appTitle: "Money Transfer App",
+        cardBobTitle: "Card (in BOB)",
+        cardUsdTitle: "Card (in USD)",
+        cardDesc: "Bank Conversion",
+        cheapest: "Cheapest Option",
+        using: "Using",
+        avoid: "Avoid",
+        save: "You save"
+    },
+    es: {
+        cashTitle: "Cambio callejero",
+        cashDesc: "Cambio de dólares físicos",
+        appTitle: "Aplicación de giros",
+        cardBobTitle: "Tarjeta (en BOB)",
+        cardUsdTitle: "Tarjeta (en USD)",
+        cardDesc: "Conversión bancaria",
+        cheapest: "Mejor Opción",
+        using: "Usando",
+        avoid: "Evitar",
+        save: "Ahorras"
+    },
+    pt: {
+        cashTitle: "Câmbio de rua",
+        cashDesc: "Câmbio de USD físico",
+        appTitle: "App de Transferência",
+        cardBobTitle: "Cartão (em BOB)",
+        cardUsdTitle: "Cartão (em USD)",
+        cardDesc: "Conversão bancária",
+        cheapest: "Melhor Opção",
+        using: "Usando",
+        avoid: "Evitar",
+        save: "Você economiza"
+    },
+    he: {
+        cashTitle: "החלפה ברחוב",
+        cashDesc: "החלפת דולר מזומן",
+        appTitle: "אפליקציית העברות",
+        cardBobTitle: "כרטיס (ב-BOB)",
+        cardUsdTitle: "כרטיס (ב-USD)",
+        cardDesc: "המרת בנק",
+        cheapest: "האפשרות הזולה ביותר",
+        using: "באמצעות",
+        avoid: "הימנע",
+        save: "אתה חוסך"
+    },
+    fr: {
+        cashTitle: "Street exchange",
+        cashDesc: "USD street exchange",
+        appTitle: "Money Transfer App",
+        cardBobTitle: "Card (in BOB)",
+        cardUsdTitle: "Card (in USD)",
+        cardDesc: "Bank Conversion",
+        cheapest: "Cheapest Option",
+        using: "Using",
+        avoid: "Avoid",
+        save: "You save"
+    },
+    de: {
+        cashTitle: "Street exchange",
+        cashDesc: "USD street exchange",
+        appTitle: "Money Transfer App",
+        cardBobTitle: "Card (in BOB)",
+        cardUsdTitle: "Card (in USD)",
+        cardDesc: "Bank Conversion",
+        cheapest: "Cheapest Option",
+        using: "Using",
+        avoid: "Avoid",
+        save: "You save"
+    },
+    zh: {
+        cashTitle: "Street exchange",
+        cashDesc: "USD street exchange",
+        appTitle: "Money Transfer App",
+        cardBobTitle: "Card (in BOB)",
+        cardUsdTitle: "Card (in USD)",
+        cardDesc: "Bank Conversion",
+        cheapest: "Cheapest Option",
+        using: "Using",
+        avoid: "Avoid",
+        save: "You save"
+    },
+    ko: {
+        cashTitle: "Street exchange",
+        cashDesc: "USD street exchange",
+        appTitle: "Money Transfer App",
+        cardBobTitle: "Card (in BOB)",
+        cardUsdTitle: "Card (in USD)",
+        cardDesc: "Bank Conversion",
+        cheapest: "Cheapest Option",
+        using: "Using",
+        avoid: "Avoid",
+        save: "You save"
+    }
+};
+
+// 2. Detect Language
+function getCurrentLang() {
+    const path = window.location.pathname;
+    if (path.includes('/es/')) return 'es';
+    if (path.includes('/pt/')) return 'pt';
+    if (path.includes('/he/')) return 'he';
+    if (path.includes('/fr/')) return 'fr';
+    if (path.includes('/de/')) return 'de';
+    if (path.includes('/zh/')) return 'zh';
+    if (path.includes('/ko/')) return 'ko';
+    return 'en';
+}
+
+const currentLang = getCurrentLang();
+const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
 // Defaults
 const DEFAULTS = {
     homeCurrency: 'GBP',
@@ -73,6 +189,7 @@ function initEls() {
         billCurrencyRadios: document.getElementsByName('bill_currency'),
 
         // Toggles
+        langSelector: document.getElementById('lang-selector'),
         themeToggle: document.getElementById('theme-toggle'),
         btnToggleCash: document.getElementById('btn-toggle-cash'),
         btnToggleApp: document.getElementById('btn-toggle-app'),
@@ -134,6 +251,22 @@ const SYMBOLS = {
 
 // Initialization
 async function init() {
+    // Smart Auto-Redirect (Only on Root)
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        const userLang = navigator.language || navigator.userLanguage;
+        const savedLang = localStorage.getItem('preferred-lang');
+
+        if (!savedLang) {
+            if (userLang.startsWith('es')) window.location.replace('/es/');
+            else if (userLang.startsWith('pt')) window.location.replace('/pt/');
+            else if (userLang.startsWith('he')) window.location.replace('/he/');
+            else if (userLang.startsWith('fr')) window.location.replace('/fr/');
+            else if (userLang.startsWith('de')) window.location.replace('/de/');
+            else if (userLang.startsWith('zh')) window.location.replace('/zh/');
+            else if (userLang.startsWith('ko')) window.location.replace('/ko/');
+        }
+    }
+
     initEls();
     initTheme();
     initCurrency();
@@ -204,6 +337,20 @@ function initCurrency() {
 }
 
 function setupEventListeners() {
+    // Language Selector
+    if (els.langSelector) {
+        els.langSelector.value = currentLang;
+        els.langSelector.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            localStorage.setItem('preferred-lang', lang);
+            let path = '/';
+            if (lang !== 'en') {
+                path = `/${lang}/`;
+            }
+            window.location.href = path;
+        });
+    }
+
     // Bill Amount
     els.billAmount.addEventListener('input', (e) => {
         state.billAmount = parseFloat(e.target.value) || 0;
@@ -463,7 +610,7 @@ function loadCachedRates() {
 
 async function fetchRates() {
     try {
-        const res = await fetch('data/rates.json');
+        const res = await fetch('/data/rates.json');
         const data = await res.json();
 
         // Cache the fresh data
@@ -517,7 +664,7 @@ function calculate() {
         results.push({
             id: 'cashStreet',
             type: 'cash',
-            title: 'Street exchange',
+            title: t.cashTitle,
             desc: `Exch: ${streetExchangeRate} BOB/$`,
             val: costStreet
         });
@@ -533,7 +680,7 @@ function calculate() {
         results.push({
             id: 'cashApp',
             type: 'app',
-            title: 'Money Transfer App',
+            title: t.appTitle,
             desc: `Fee: ${SYMBOLS[state.homeCurrency]}${appFee}`,
             val: costApp
         });
@@ -551,8 +698,8 @@ function calculate() {
         results.push({
             id: 'cardBob',
             type: 'card',
-            title: 'Card (in BOB)',
-            desc: 'Bank Conversion',
+            title: t.cardBobTitle,
+            desc: t.cardDesc,
             val: costCardBob
         });
 
@@ -567,8 +714,8 @@ function calculate() {
         results.push({
             id: 'cardUsd',
             type: 'card',
-            title: 'Card (in USD)',
-            desc: 'Bank Conversion',
+            title: t.cardUsdTitle,
+            desc: t.cardDesc,
             val: costCardUsd
         });
     }
@@ -606,13 +753,13 @@ function updateUI(results) {
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
                         ${getIconSvg('emoji_events', 'w-3.5 h-3.5')}
-                        <span class="text-xs font-bold uppercase tracking-wide">Cheapest Option</span>
+                        <span class="text-xs font-bold uppercase tracking-wide">${t.cheapest}</span>
                     </div>
                     <div class="opacity-50">${getIconSvg(getIcon(best.type), 'w-6 h-6')}</div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <h2 class="text-3xl font-bold tracking-tight">${fmt(best.val)}</h2>
-                    <p class="text-green-50 font-medium">Using ${best.title}</p>
+                    <p class="text-green-50 font-medium">${t.using} ${best.title}</p>
                 </div>
             </div>
         </div>
@@ -641,7 +788,7 @@ function updateUI(results) {
             extraBadge = `
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-danger"></div>
                 <div class="flex items-center gap-1 mt-0.5">
-                    <span class="rounded bg-danger/10 px-1.5 py-0.5 text-[10px] font-bold text-danger uppercase tracking-wider">Avoid</span>
+                    <span class="rounded bg-danger/10 px-1.5 py-0.5 text-[10px] font-bold text-danger uppercase tracking-wider">${t.avoid}</span>
                 </div>
              `;
         } else {
@@ -682,7 +829,7 @@ function updateUI(results) {
                     ${getIconSvg('savings', 'w-5 h-5')}
                 </div>
                 <p class="text-sm font-medium text-yellow-900 dark:text-yellow-100">
-                    You save <span class="font-bold">${fmt(savings)}</span> compared to paying directly with your card!
+                    ${t.save} <span class="font-bold">${fmt(savings)}</span> compared to paying directly with your card!
                 </p>
             </div>
         `;
