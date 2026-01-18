@@ -145,7 +145,7 @@ def update_sitemap(timestamp, filepath='sitemap.xml'):
 
     # List all your supported languages here
     # Adding trailing slash for directories is standard for folder-based URLs
-    langs = ['', 'es/', 'pt/', 'he/', 'fr/', 'de/', 'zh/', 'ko/']
+    langs = ['', 'es/', 'pt/', 'he/', 'fr/', 'de/', 'zh-CN/', 'ko/']
 
     url_entries = ""
     for lang in langs:
@@ -305,7 +305,7 @@ def main():
         print(f"Saved data to {output_file}")
 
         # Update HTML files (root + languages)
-        languages = ['es', 'pt', 'he', 'fr', 'de', 'zh', 'ko']
+        languages = ['es', 'pt', 'he', 'fr', 'de', 'zh-CN', 'ko']
         files_to_update = ['index.html'] + [f'{lang}/index.html' for lang in languages]
 
         for filepath in files_to_update:
