@@ -23,7 +23,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Bolivia Blue Dollar Calculator",
+  "name": {{ meta_title | tojson }},
   "applicationCategory": "FinanceApplication",
   "dateModified": "2026-01-18T12:03:24.403067+00:00",
   "operatingSystem": "Web",
@@ -32,7 +32,7 @@
     "price": "0",
     "priceCurrency": "USD"
   },
-  "description": "A calculator to compare payment methods in Bolivia using the Blue Dollar exchange rate."
+  "description": {{ meta_description | tojson }}
 }
 </script>
 <script type="application/ld+json">
@@ -41,24 +41,31 @@
   "@type": "FAQPage",
   "mainEntity": [{
     "@type": "Question",
-    "name": "What is the Blue Dollar in Bolivia?",
+    "name": {{ faq_q1 | tojson }},
     "acceptedAnswer": {
       "@type": "Answer",
-      "text": "The \"Blue Dollar\" is the unofficial exchange rate for US Dollars in Bolivia. It is typically significantly higher than the official bank rate."
+      "text": {{ faq_a1 | tojson }}
     }
   }, {
     "@type": "Question",
-    "name": "Should I use Credit Card or Cash in Bolivia?",
+    "name": {{ faq_q2 | tojson }},
     "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Cash exchanged at the Blue Dollar rate provides the best value. Credit cards charge the official rate, making purchases 20-40% more expensive."
+      "text": {{ faq_a2 | tojson }}
     }
   }, {
     "@type": "Question",
-    "name": "Is it safe to exchange money on the street?",
+    "name": {{ faq_q3 | tojson }},
     "acceptedAnswer": {
       "@type": "Answer",
-      "text": "It is generally safe in busy areas like Avenida Camacho in La Paz. Always count your money and check for watermarks to avoid counterfeits."
+      "text": {{ faq_a3 | tojson }}
+    }
+  }, {
+    "@type": "Question",
+    "name": {{ faq_q4 | tojson }},
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": {{ faq_a4 | tojson }}
     }
   }]
 }
