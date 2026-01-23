@@ -142,7 +142,7 @@ const FLAGS = {
     KRW: '🇰🇷', ILS: '🇮🇱'
 };
 const SYMBOLS = {
-    GBP: '£', USD: '$', EUR: '€', AUD: '$', CAD: '$', BOB: 'Bs',
+    GBP: '£', USD: '$', EUR: '€', AUD: 'A$', CAD: '$', BOB: 'Bs',
     TWD: 'NT$', JPY: '¥', CNY: '¥', RUB: '₽',
     NZD: '$', SEK: 'kr', NOK: 'kr', DKK: 'kr', CHF: 'Fr.',
     KRW: '₩', ILS: '₪'
@@ -232,6 +232,12 @@ function initCurrency() {
     if (stored && FLAGS[stored]) {
         state.homeCurrency = stored;
         if(els.homeCurrency) els.homeCurrency.value = stored;
+    } else {
+        // If no stored preference, check if the browser has restored a value in the select element
+        // or if we should default to the first option (or whatever is selected in DOM).
+        if (els.homeCurrency && els.homeCurrency.value && FLAGS[els.homeCurrency.value]) {
+            state.homeCurrency = els.homeCurrency.value;
+        }
     }
 }
 
