@@ -33,7 +33,10 @@ const DEFAULTS = {
 
     // Card Params
     bankFeePct: 0.0,
-    merchantUsdRate: 6.96
+    merchantUsdRate: 6.96,
+
+    // Status Flags
+    usingDefaultStreetRate: true
 };
 
 const ICON_PATHS = {
@@ -436,6 +439,7 @@ function processRatesData(data) {
     // 2. Process Street Rate
     if (data.street_rate_bob && data.street_rate_bob > 0) {
         state.streetExchangeRate = data.street_rate_bob;
+        state.usingDefaultStreetRate = false;
     }
 
     // Update derived defaults
@@ -540,6 +544,16 @@ function populateInputs() {
     if(els.bankFeeDisplay) els.bankFeeDisplay.textContent = state.bankFeePct + '%';
     if(els.cardBobRate) els.cardBobRate.value = parseFloat(state.cardBobRate.toFixed(2));
     if(els.merchantUsdRate) els.merchantUsdRate.value = state.merchantUsdRate;
+
+    // Warnings
+    const warningEl = document.getElementById('street-rate-warning');
+    if (warningEl) {
+        if (state.usingDefaultStreetRate) {
+            warningEl.classList.remove('hidden');
+        } else {
+            warningEl.classList.add('hidden');
+        }
+    }
 }
 
 function calculate() {
