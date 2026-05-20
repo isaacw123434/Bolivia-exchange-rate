@@ -33,10 +33,15 @@ jobs:
       - name: Rebuild Site (HTML & Sitemap)
         run: python build.py
 
+      - name: Verify Site
+        run: |
+          python scripts/verify_translations.py
+          python scripts/verify_site.py
+
       - name: Commit and Push changes
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "actions@github.com"
-          git add data/rates.json index.html sitemap.xml */index.html
+          git add data/rates.json data/history.json index.html history/index.html sitemap.xml */index.html */history/index.html
           # Only commit if there are changes
           git diff --quiet && git diff --staged --quiet || (git commit -m "Daily rate and date update [skip ci]" && git push)

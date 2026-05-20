@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html class="light" lang="{{ lang_code }}" {% if lang_code == 'he' %}dir="rtl"{% endif %}>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.google-analytics.com https://analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{ page_title }} - {{ current_date }}</title>
+<meta name="description" content="{{ page_description }}">
+<meta name="revised" content="{{ current_date_long }}" />
+<link rel="canonical" href="{{ canonical_url }}" />
+<meta property="og:title" content="{{ page_title }}" />
+<meta property="og:description" content="{{ page_description }}" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ page_title }}" />
+<meta name="twitter:description" content="{{ page_description }}" />
+<link rel="icon" type="image/png" href="/static/favicon-96x96.png" sizes="96x96" />
+<link rel="shortcut icon" href="/static/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
+<link rel="manifest" href="/static/site.webmanifest" />
+<link href="/static/output.css" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+{% for lang in languages %}
+<link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}" />
+{% endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ x_default_url }}" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": {{ page_title | tojson }},
+  "description": {{ page_description | tojson }},
+  "dateModified": {{ date_modified | tojson }},
+  "url": {{ canonical_url | tojson }}
+}
+</script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased selection:bg-primary/30">
+<div class="relative mx-auto min-h-screen w-full max-w-4xl bg-background-light px-4 py-6 dark:bg-background-dark sm:px-6">
+    <header class="mb-6 flex items-center justify-between gap-4">
+        <a href="{{ home_url }}" class="text-sm font-bold text-primary">{{ header_title }}</a>
+        <nav class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+            <a class="rounded-lg px-3 py-2 hover:bg-white dark:hover:bg-card-dark" href="{{ history_page_url }}">{{ history_page_link }}</a>
+        </nav>
+    </header>
+
+    <main class="space-y-6">
+        <section class="space-y-3">
+            <p class="text-xs font-bold uppercase tracking-wider text-primary">{{ today_updated_label }} {{ rates_updated_display }}</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">{{ page_title }}</h1>
+            <p class="max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ page_intro }}</p>
+        </section>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-700 dark:bg-card-dark">
+            <div class="space-y-4">
+{% for point in history_points %}
+                <article>
+                    <div class="mb-2 flex items-center justify-between gap-3 text-sm">
+                        <h2 class="font-bold text-slate-900 dark:text-white">{{ point.date }}</h2>
+                        <span class="font-bold text-primary">{{ point.street }} / {{ point.official }}</span>
+                    </div>
+                    <div class="h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                        <div class="h-full rounded-full bg-primary" style="width: {{ point.width }}%"></div>
+                    </div>
+                    <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ today_difference_label }}: {{ point.premium }}</p>
+                </article>
+{% endfor %}
+            </div>
+            <p class="mt-5 border-t border-slate-100 pt-4 text-xs leading-relaxed text-slate-500 dark:border-slate-800 dark:text-slate-400">{{ no_history_note }}</p>
+        </section>
+
+        <section class="grid gap-3 sm:grid-cols-2">
+            <a href="{{ home_url }}" class="rounded-xl border border-slate-200 bg-white p-4 font-bold text-slate-800 shadow-soft transition-colors hover:border-primary dark:border-slate-700 dark:bg-card-dark dark:text-slate-200">{{ meta_title }}</a>
+            <a href="/data/history.json" class="rounded-xl border border-slate-200 bg-white p-4 font-bold text-slate-800 shadow-soft transition-colors hover:border-primary dark:border-slate-700 dark:bg-card-dark dark:text-slate-200">JSON history payload</a>
+        </section>
+    </main>
+</div>
+</body>
+</html>

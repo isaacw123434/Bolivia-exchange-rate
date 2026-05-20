@@ -142,6 +142,7 @@ async def get_monzo_rates():
 def main():
     cached_data = None
     output_file = 'data/rates.json'
+    history_file = 'data/history.json'
 
     # Check cache
     if os.path.exists(output_file):
@@ -195,6 +196,8 @@ def main():
             json.dump(data, f, indent=2)
         print(f"Saved data to {output_file}")
 
+        update_history(history_file, data)
+
         # Update HTML files (root + languages)
         # languages = ['es', 'pt', 'he', 'fr', 'de', 'zh-CN', 'ko']
         # files_to_update = ['index.html'] + [f'{lang}/index.html' for lang in languages]
@@ -210,6 +213,47 @@ def main():
     except Exception as e:
         print(f"Error saving file: {e}")
         sys.exit(1)
+
+def official_usd_to_bob(data):
+    official_rates = data.get("official_rates") or {}
+    base_to_usd = official_rates.get("USD") or 1
+    base_to_bob = official_rates.get("BOB")
+    if not base_to_usd or not base_to_bob:
+        return None
+    return float(base_to_bob) / float(base_to_usd)
+
+def update_history(history_file, data):
+    street_rate = data.get("street_rate_bob")
+    official_rate = official_usd_to_bob(data)
+    if not street_rate or not official_rate:
+        print("Skipping history update because rates are incomplete.")
+        return
+
+    entry_date = datetime.fromisoformat(data["date"]).date().isoformat()
+    entry = {
+        "date": entry_date,
+        "timestamp": data.get("timestamp"),
+        "street_rate_bob": round(float(street_rate), 4),
+        "official_usd_bob": round(float(official_rate), 4),
+        "street_premium_pct": round(((float(street_rate) / float(official_rate)) - 1) * 100, 2),
+        "source": data.get("source")
+    }
+
+    history = []
+    if os.path.exists(history_file):
+        try:
+            with open(history_file, 'r') as f:
+                history = json.load(f)
+        except Exception as e:
+            print(f"Error reading history file: {e}")
+
+    history_by_date = {item.get("date"): item for item in history if item.get("date")}
+    history_by_date[entry_date] = entry
+    updated_history = [history_by_date[date] for date in sorted(history_by_date)]
+
+    with open(history_file, 'w') as f:
+        json.dump(updated_history, f, indent=2)
+    print(f"Updated history in {history_file}")
 
 if __name__ == "__main__":
     main()

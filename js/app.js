@@ -11,13 +11,24 @@ const t = window.UI_STRINGS || {
     cheapest: "Cheapest Option",
     using: "Using",
     avoid: "Avoid",
-    save: "You save"
+    save: "You save",
+    emptyTitle: "Enter a bill amount",
+    emptyText: "Add the total in BOB or USD to compare cash, transfer app, and card costs.",
+    recommendationLabel: "Best way to pay",
+    estimatedCost: "Estimated cost",
+    payWith: "Pay with",
+    whatThisMeans: "What this means",
+    comparisonIntro: "For this bill",
+    costsMoreThan: "costs",
+    moreThan: "more than",
+    lowestCost: "is the lowest-cost option",
+    exampleNote: "Example: 100 BOB restaurant bill. Change it to your real total anytime."
 };
 
 // Defaults
 const DEFAULTS = {
     homeCurrency: 'GBP',
-    billAmount: 0,
+    billAmount: 100,
     billCurrency: 'BOB', // 'BOB' or 'USD'
 
     // Payment Methods
@@ -35,6 +46,8 @@ const DEFAULTS = {
     bankFeePct: 0.0,
     merchantUsdRate: 6.96
 };
+
+let hasUserEditedBillAmount = false;
 
 const ICON_PATHS = {
     "flag": "M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z",
@@ -65,6 +78,23 @@ function getIconSvg(name, classes = "w-6 h-6") {
     return `<svg class="${classes}" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="${ICON_PATHS[name]}"/></svg>`;
 }
 
+function trackEvent(eventName, params = {}) {
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('event', eventName, {
+        language: currentLang,
+        home_currency: state.homeCurrency,
+        bill_currency: state.billCurrency,
+        ...params
+    });
+}
+
+const trackedOnce = new Set();
+function trackOnce(key, eventName, params = {}) {
+    if (trackedOnce.has(key)) return;
+    trackedOnce.add(key);
+    trackEvent(eventName, params);
+}
+
 // State
 let state = {
     ...DEFAULTS,
@@ -89,6 +119,10 @@ function initEls() {
 
         // Toggles
         langSelector: document.getElementById('lang-selector'),
+        langSelectorButton: document.getElementById('lang-selector-button'),
+        langSelectorMenu: document.getElementById('lang-selector-menu'),
+        langSelectorFlag: document.getElementById('lang-selector-flag'),
+        langSelectorLabel: document.getElementById('lang-selector-label'),
         themeToggle: document.getElementById('theme-toggle'),
         btnToggleCash: document.getElementById('btn-toggle-cash'),
         btnToggleApp: document.getElementById('btn-toggle-app'),
@@ -135,17 +169,28 @@ function initEls() {
     };
 }
 
-const FLAGS = {
-    GBP: '🇬🇧', USD: '🇺🇸', EUR: '🇪🇺', AUD: '🇦🇺', CAD: '🇨🇦',
-    TWD: '🇹🇼', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺',
-    NZD: '🇳🇿', SEK: '🇸🇪', NOK: '🇳🇴', DKK: '🇩🇰', CHF: '🇨🇭',
-    KRW: '🇰🇷', ILS: '🇮🇱'
+const CURRENCY_FLAGS = {
+    GBP: 'gb', USD: 'us', EUR: 'eu', AUD: 'au', CAD: 'ca',
+    TWD: 'tw', JPY: 'jp', CNY: 'cn', RUB: 'ru',
+    NZD: 'nz', SEK: 'se', NOK: 'no', DKK: 'dk', CHF: 'ch',
+    KRW: 'kr', ILS: 'il'
 };
 const SYMBOLS = {
     GBP: '£', USD: '$', EUR: '€', AUD: 'A$', CAD: '$', BOB: 'Bs',
     TWD: 'NT$', JPY: '¥', CNY: '¥', RUB: '₽',
     NZD: '$', SEK: 'kr', NOK: 'kr', DKK: 'kr', CHF: 'Fr.',
     KRW: '₩', ILS: '₪'
+};
+
+const LANGUAGE_OPTIONS = {
+    en: { short: 'EN', flag: 'us', path: '/' },
+    es: { short: 'ES', flag: 'es', path: '/es/' },
+    pt: { short: 'PT', flag: 'pt', path: '/pt/' },
+    he: { short: 'HE', flag: 'il', path: '/he/' },
+    fr: { short: 'FR', flag: 'fr', path: '/fr/' },
+    de: { short: 'DE', flag: 'de', path: '/de/' },
+    'zh-CN': { short: 'ZH', flag: 'cn', path: '/zh-CN/' },
+    ko: { short: 'KO', flag: 'kr', path: '/ko/' }
 };
 
 // Initialization
@@ -206,9 +251,11 @@ function initTheme() {
             if (e.target.checked) {
                 document.documentElement.classList.add('dark');
                 localStorage.setItem('theme', 'dark');
+                trackEvent('theme_change', { theme: 'dark' });
             } else {
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
+                trackEvent('theme_change', { theme: 'light' });
             }
         });
     }
@@ -229,36 +276,90 @@ function initTheme() {
 
 function initCurrency() {
     const stored = localStorage.getItem('homeCurrency');
-    if (stored && FLAGS[stored]) {
+    if (stored && CURRENCY_FLAGS[stored]) {
         state.homeCurrency = stored;
         if(els.homeCurrency) els.homeCurrency.value = stored;
     } else {
         // If no stored preference, check if the browser has restored a value in the select element
         // or if we should default to the first option (or whatever is selected in DOM).
-        if (els.homeCurrency && els.homeCurrency.value && FLAGS[els.homeCurrency.value]) {
+        if (els.homeCurrency && els.homeCurrency.value && CURRENCY_FLAGS[els.homeCurrency.value]) {
             state.homeCurrency = els.homeCurrency.value;
         }
     }
 }
 
+function updateLanguageSelector(lang) {
+    const option = LANGUAGE_OPTIONS[lang] || LANGUAGE_OPTIONS.en;
+    if (els.langSelectorFlag) {
+        els.langSelectorFlag.src = `/static/flags/${option.flag}.svg`;
+    }
+    if (els.langSelectorLabel) {
+        els.langSelectorLabel.textContent = option.short;
+    }
+    if (els.langSelectorMenu) {
+        els.langSelectorMenu.querySelectorAll('[data-lang]').forEach((item) => {
+            const isSelected = item.getAttribute('data-lang') === lang;
+            item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+            item.classList.toggle('bg-slate-100', isSelected);
+            item.classList.toggle('dark:bg-slate-800', isSelected);
+        });
+    }
+}
+
+function closeLanguageMenu() {
+    if (!els.langSelectorMenu || !els.langSelectorButton) return;
+    els.langSelectorMenu.classList.add('hidden');
+    els.langSelectorButton.setAttribute('aria-expanded', 'false');
+}
+
+function openLanguageMenu() {
+    if (!els.langSelectorMenu || !els.langSelectorButton) return;
+    els.langSelectorMenu.classList.remove('hidden');
+    els.langSelectorButton.setAttribute('aria-expanded', 'true');
+}
+
 function setupEventListeners() {
     // Language Selector
-    if (els.langSelector) {
-        els.langSelector.value = currentLang;
-        els.langSelector.addEventListener('change', (e) => {
-            const lang = e.target.value;
-            localStorage.setItem('preferred-lang', lang);
-            let path = '/';
-            if (lang !== 'en') {
-                path = `/${lang}/`;
+    if (els.langSelector && els.langSelectorButton && els.langSelectorMenu) {
+        updateLanguageSelector(currentLang);
+
+        els.langSelectorButton.addEventListener('click', () => {
+            const isOpen = els.langSelectorButton.getAttribute('aria-expanded') === 'true';
+            if (isOpen) closeLanguageMenu();
+            else openLanguageMenu();
+        });
+
+        els.langSelectorMenu.querySelectorAll('[data-lang]').forEach((item) => {
+            item.addEventListener('click', () => {
+                const lang = item.getAttribute('data-lang');
+                const option = LANGUAGE_OPTIONS[lang] || LANGUAGE_OPTIONS.en;
+                localStorage.setItem('preferred-lang', lang);
+                trackEvent('language_change', { selected_language: lang });
+                closeLanguageMenu();
+                window.location.href = option.path;
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!els.langSelector.contains(e.target)) {
+                closeLanguageMenu();
             }
-            window.location.href = path;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLanguageMenu();
+            }
         });
     }
 
     // Bill Amount
     els.billAmount.addEventListener('input', (e) => {
+        hasUserEditedBillAmount = true;
         state.billAmount = parseFloat(e.target.value) || 0;
+        if (state.billAmount > 0) {
+            trackOnce('bill_amount_entered', 'bill_amount_entered');
+        }
         debouncedCalculate();
     });
 
@@ -267,6 +368,7 @@ function setupEventListeners() {
         radio.addEventListener('change', (e) => {
             if(e.target.checked) {
                 state.billCurrency = e.target.value;
+                trackEvent('bill_currency_change', { selected_bill_currency: state.billCurrency });
                 updateCurrencyDisplay();
                 calculate();
             }
@@ -277,6 +379,7 @@ function setupEventListeners() {
     els.homeCurrency.addEventListener('change', async (e) => {
         state.homeCurrency = e.target.value;
         localStorage.setItem('homeCurrency', state.homeCurrency);
+        trackEvent('home_currency_change');
         updateCurrencyDisplay();
         await fetchRates(); // Fetch new rates for the new base
         populateInputs();
@@ -288,6 +391,10 @@ function setupEventListeners() {
         if(!btn) return;
         btn.addEventListener('click', () => {
             state[key] = !state[key];
+            trackEvent('payment_method_toggle', {
+                method: key.replace('has', ''),
+                enabled: state[key]
+            });
             updateToggleUI();
             calculate();
         });
@@ -303,6 +410,9 @@ function setupEventListeners() {
         el.addEventListener('input', (e) => {
             state[key] = parseFloat(e.target.value) || 0;
             debouncedCalculate();
+        });
+        el.addEventListener('change', () => {
+            trackEvent('rate_input_change', { input_name: key });
         });
     };
 
@@ -338,6 +448,14 @@ function setupEventListeners() {
             debouncedCalculate();
         });
     }
+
+    document.querySelectorAll('[data-resource-link]').forEach((link) => {
+        link.addEventListener('click', () => {
+            trackEvent('resource_link_click', {
+                resource: link.getAttribute('data-resource-link')
+            });
+        });
+    });
 }
 
 function updateToggleUI() {
@@ -381,7 +499,10 @@ function updateToggleUI() {
 
 function updateCurrencyDisplay() {
     // Update Flag
-    els.flagIcon.textContent = FLAGS[state.homeCurrency] || '🌍';
+    if (els.flagIcon) {
+        const flagCode = CURRENCY_FLAGS[state.homeCurrency] || 'gb';
+        els.flagIcon.src = `/static/flags/${flagCode}.svg`;
+    }
 
     // Update Bill Currency Symbol
     els.currencySymbol.textContent = SYMBOLS[state.billCurrency] || '$';
@@ -401,10 +522,10 @@ function updateCurrencyDisplay() {
         els.labelHomeUsd.textContent = `How much USD can ${SYMBOLS[state.homeCurrency] || state.homeCurrency}1 buy`;
     }
     if (els.labelAppRate) {
-        els.labelAppRate.textContent = `Transfer App ${state.homeCurrency} → BOB`;
+        els.labelAppRate.textContent = `Transfer App ${state.homeCurrency} -> BOB`;
     }
     if (els.labelOfficialRate) {
-        els.labelOfficialRate.textContent = `Official Rate (${state.homeCurrency} → BOB)`;
+        els.labelOfficialRate.textContent = `Official Rate (${state.homeCurrency} -> BOB)`;
     }
 }
 
@@ -528,6 +649,7 @@ async function fetchRates() {
 }
 
 function populateInputs() {
+    if(els.billAmount && !hasUserEditedBillAmount) els.billAmount.value = state.billAmount || '';
     if(els.homeToUsdRate) els.homeToUsdRate.value = parseFloat(state.homeToUsdRate.toFixed(4));
     if(els.streetExchangeRate) els.streetExchangeRate.value = state.streetExchangeRate;
     if(els.appRate) {
@@ -636,7 +758,15 @@ function updateUI(results) {
                                 .sort((a, b) => a.val - b.val);
 
     if (validResults.length === 0) {
-        els.winnerCardContainer.innerHTML = '';
+        els.winnerCardContainer.innerHTML = `
+            <div class="rounded-2xl border border-dashed border-slate-300 bg-card-light p-6 text-center shadow-sm dark:border-slate-700 dark:bg-card-dark">
+                <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    ${getIconSvg('calculate', 'w-6 h-6')}
+                </div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">${t.emptyTitle}</h2>
+                <p class="mt-2 text-sm text-slate-500 dark:text-slate-300">${t.emptyText}</p>
+            </div>
+        `;
         els.resultsList.innerHTML = '';
         els.savingsAlertContainer.innerHTML = '';
         return;
@@ -645,6 +775,16 @@ function updateUI(results) {
     const best = validResults[0];
     const worst = validResults[validResults.length - 1];
     const savings = worst.val - best.val;
+    const compared = validResults.find(r => r.id === 'cardUsd' && r.id !== best.id) || worst;
+    const comparedDiffPct = best.val > 0 ? ((compared.val - best.val) / best.val) * 100 : 0;
+    const comparisonText = compared.val > best.val
+        ? `${t.comparisonIntro}, ${compared.title} ${t.costsMoreThan} ${Math.round(comparedDiffPct)}% ${t.moreThan} ${best.title}.`
+        : `${t.comparisonIntro}, ${best.title} ${t.lowestCost}.`;
+    trackOnce('calculator_result_view', 'calculator_result_view', {
+        best_method: best.id,
+        available_methods: validResults.length,
+        bill_amount_band: state.billAmount > 0 ? Math.min(Math.ceil(state.billAmount / 100) * 100, 1000) : 0
+    });
 
     // Helper to format money
     const fmt = (n) => n.toLocaleString('en-US', { style: 'currency', currency: cur });
@@ -658,13 +798,13 @@ function updateUI(results) {
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
                         ${getIconSvg('emoji_events', 'w-3.5 h-3.5')}
-                        <span class="text-xs font-bold uppercase tracking-wide">${t.cheapest}</span>
+                        <span class="text-xs font-bold uppercase tracking-wide">${t.recommendationLabel}</span>
                     </div>
                     <div class="opacity-50">${getIconSvg(getIcon(best.type), 'w-6 h-6')}</div>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <h2 class="text-3xl font-bold tracking-tight">${fmt(best.val)}</h2>
-                    <p class="text-green-50 font-medium">${t.using} ${best.title}</p>
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-2xl font-bold tracking-tight">${t.payWith} ${best.title}</h2>
+                    <p class="text-green-50 font-medium">${t.estimatedCost}: <span class="font-bold text-white">${fmt(best.val)}</span></p>
                 </div>
             </div>
         </div>
@@ -729,6 +869,16 @@ function updateUI(results) {
     // 3. Render Savings Alert
     if (validResults.length > 1) {
         els.savingsAlertContainer.innerHTML = `
+            <div class="space-y-3">
+            <div class="flex items-start gap-3 rounded-xl bg-emerald-50 p-4 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-900/60">
+                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
+                    ${getIconSvg('calculate', 'w-5 h-5')}
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">${t.whatThisMeans}</p>
+                    <p class="mt-1 text-sm font-medium text-emerald-950 dark:text-emerald-100">${comparisonText}</p>
+                </div>
+            </div>
             <div class="flex items-center gap-3 rounded-xl bg-warning/20 p-4 border border-warning/30">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-warning text-yellow-900">
                     ${getIconSvg('savings', 'w-5 h-5')}
@@ -736,6 +886,7 @@ function updateUI(results) {
                 <p class="text-sm font-medium text-yellow-900 dark:text-yellow-100">
                     ${t.save} <span class="font-bold">${fmt(savings)}</span> compared to paying directly with your card!
                 </p>
+            </div>
             </div>
         `;
     } else {

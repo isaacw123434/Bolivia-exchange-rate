@@ -1,5 +1,8 @@
 node_modules/
 .venv/
+.gcloud/
 __pycache__/
 *.pyc
 *.log
+client_secret_*.json
+application_default_credentials.json
