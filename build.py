@@ -129,6 +129,8 @@ def main():
             "languages": languages_list,
             "home_url": home_url,
             "history_page_url": page_url(lang_code, "history"),
+            "months_short": locale['months_short'],
+            "months_long": locale['months_long'],
             **rate_context,
             **trans_data  # Unpack translations
         }

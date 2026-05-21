@@ -93,7 +93,10 @@
         "street_rate_note": "Observed street cash sell rate for USD to BOB.",
         "official_rate_note": "Derived from the official rates payload used by the calculator.",
         "difference_rate_note": "How much more BOB the street USD rate gives than the official rate.",
-        "no_history_note": "Historical tracking starts with the committed rate snapshots available in this repository."
+        "no_history_note": "Historical tracking starts with the committed rate snapshots available in this repository.",
+        "chart_tab_7d": "7 Days",
+        "chart_tab_4w": "4 Weeks",
+        "chart_tab_monthly": "Monthly"
     },
     "es": {
         "lang_code": "es",
@@ -189,7 +192,10 @@
         "street_rate_note": "Tasa observada de venta en efectivo USD a BOB.",
         "official_rate_note": "Calculada desde el archivo de tasas oficiales que usa la calculadora.",
         "difference_rate_note": "Cuánto más BOB entrega el dólar callejero frente a la tasa oficial.",
-        "no_history_note": "El historial empieza con las tasas guardadas en este repositorio."
+        "no_history_note": "El historial empieza con las tasas guardadas en este repositorio.",
+        "chart_tab_7d": "7 Días",
+        "chart_tab_4w": "4 Semanas",
+        "chart_tab_monthly": "Mensual"
     },
     "pt": {
         "lang_code": "pt",
@@ -285,7 +291,10 @@
         "street_rate_note": "Taxa observada para venda em dinheiro USD para BOB.",
         "official_rate_note": "Derivada do arquivo de taxas oficiais usado pela calculadora.",
         "difference_rate_note": "Quanto mais BOB o dólar de rua entrega em relação à taxa oficial.",
-        "no_history_note": "O histórico começa com as taxas salvas neste repositório."
+        "no_history_note": "O histórico começa com as taxas salvas neste repositório.",
+        "chart_tab_7d": "7 Dias",
+        "chart_tab_4w": "4 Semanas",
+        "chart_tab_monthly": "Mensal"
     },
     "he": {
         "lang_code": "he",
@@ -381,7 +390,10 @@
         "street_rate_note": "שער מכירת מזומן נצפה מ-USD ל-BOB.",
         "official_rate_note": "מחושב מקובץ השערים הרשמי שמשמש את המחשבון.",
         "difference_rate_note": "כמה BOB נוספים נותן שער הרחוב לעומת השער הרשמי.",
-        "no_history_note": "ההיסטוריה מתחילה משערים שמורים במאגר הזה."
+        "no_history_note": "ההיסטוריה מתחילה משערים שמורים במאגר הזה.",
+        "chart_tab_7d": "7 ימים",
+        "chart_tab_4w": "4 שבועות",
+        "chart_tab_monthly": "חודשי"
     },
     "fr": {
         "lang_code": "fr",
@@ -477,7 +489,10 @@
         "street_rate_note": "Taux observé pour la vente USD cash vers BOB.",
         "official_rate_note": "Calculé depuis le fichier de taux officiels utilisé par la calculatrice.",
         "difference_rate_note": "BOB supplémentaires obtenus avec le taux de rue par rapport au taux officiel.",
-        "no_history_note": "Le suivi historique commence avec les taux enregistrés dans ce dépôt."
+        "no_history_note": "Le suivi historique commence avec les taux enregistrés dans ce dépôt.",
+        "chart_tab_7d": "7 Jours",
+        "chart_tab_4w": "4 Semaines",
+        "chart_tab_monthly": "Mensuel"
     },
     "de": {
         "lang_code": "de",
@@ -573,7 +588,10 @@
         "street_rate_note": "Beobachteter USD-Bargeldkurs zu BOB.",
         "official_rate_note": "Aus der offiziellen Kursdatei der Rechner-App abgeleitet.",
         "difference_rate_note": "Wie viel mehr BOB der Straßenkurs gegenüber dem offiziellen Kurs liefert.",
-        "no_history_note": "Der Verlauf beginnt mit den in diesem Repository gespeicherten Kursen."
+        "no_history_note": "Der Verlauf beginnt mit den in diesem Repository gespeicherten Kursen.",
+        "chart_tab_7d": "7 Tage",
+        "chart_tab_4w": "4 Wochen",
+        "chart_tab_monthly": "Monatlich"
     },
     "ko": {
         "lang_code": "ko",
@@ -669,7 +687,10 @@
         "street_rate_note": "관찰된 USD 현금 BOB 매도 환율입니다.",
         "official_rate_note": "계산기가 사용하는 공식 환율 데이터에서 산출됩니다.",
         "difference_rate_note": "길거리 USD 환율이 공식 환율보다 제공하는 추가 BOB 비율입니다.",
-        "no_history_note": "기록은 이 저장소에 저장된 환율 스냅샷부터 시작합니다."
+        "no_history_note": "기록은 이 저장소에 저장된 환율 스냅샷부터 시작합니다.",
+        "chart_tab_7d": "7일",
+        "chart_tab_4w": "4주",
+        "chart_tab_monthly": "월간"
     },
     "zh-CN": {
         "lang_code": "zh-CN",
@@ -765,6 +786,9 @@
         "street_rate_note": "观察到的 USD 现金兑 BOB 街头卖出汇率。",
         "official_rate_note": "由计算器使用的官方汇率数据计算得出。",
         "difference_rate_note": "街头美元汇率相比官方汇率多给出的 BOB 比例。",
-        "no_history_note": "历史记录从此仓库保存的汇率快照开始。"
+        "no_history_note": "历史记录从此仓库保存的汇率快照开始。",
+        "chart_tab_7d": "7天",
+        "chart_tab_4w": "4周",
+        "chart_tab_monthly": "月度"
     }
 }

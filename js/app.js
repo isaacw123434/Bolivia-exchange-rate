@@ -155,6 +155,12 @@ function initEls() {
         savingsAlertContainer: document.getElementById('savings-alert-container'),
         lastUpdated: document.getElementById('last-updated'),
 
+        // Today Snapshot Card
+        todayStreetRate: document.getElementById('today-street-rate'),
+        todayOfficialRate: document.getElementById('today-official-rate'),
+        todayDifference: document.getElementById('today-difference'),
+        todayUpdated: document.getElementById('today-updated'),
+
         // Display
         flagIcon: document.getElementById('flag-icon'),
         currencySymbol: document.getElementById('currency-symbol'),
@@ -533,6 +539,7 @@ function updateCurrencyDisplay() {
 function processRatesData(data) {
     // 1. Process Official Rates
     // Supports both old USD-base (implicit 1) and new GBP-base
+    let officialUsdBob = 0;
     if (data.official_rates) {
         const official = data.official_rates;
 
@@ -552,11 +559,29 @@ function processRatesData(data) {
             // We want 1 Home = Y BOB.
             state.rates.BOB = baseToBob / baseToHome;
         }
+
+        if (baseToUsd && baseToBob) {
+            officialUsdBob = baseToBob / baseToUsd;
+        }
     }
 
     // 2. Process Street Rate
     if (data.street_rate_bob && data.street_rate_bob > 0) {
         state.streetExchangeRate = data.street_rate_bob;
+    }
+
+    // Update Today's Snapshot Card elements if present
+    const streetRate = state.streetExchangeRate;
+    const streetPremium = officialUsdBob ? ((streetRate / officialUsdBob) - 1) * 100 : 0;
+
+    if (els.todayStreetRate && streetRate) {
+        els.todayStreetRate.textContent = `${streetRate.toFixed(2)} BOB`;
+    }
+    if (els.todayOfficialRate && officialUsdBob) {
+        els.todayOfficialRate.textContent = `${officialUsdBob.toFixed(2)} BOB`;
+    }
+    if (els.todayDifference && officialUsdBob) {
+        els.todayDifference.textContent = `${streetPremium.toFixed(1)}%`;
     }
 
     // Update derived defaults
@@ -615,6 +640,10 @@ function processRatesData(data) {
             ${getIconSvg('update', 'w-[14px] h-[14px]')}
             <span>Updated: ${dateStr}</span>
         `;
+
+        if (els.todayUpdated) {
+            els.todayUpdated.textContent = dateStr;
+        }
     }
 }
 
