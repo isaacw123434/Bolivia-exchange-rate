@@ -998,5 +998,13 @@
     "official_usd_bob": 6.86,
     "street_premium_pct": 46.94,
     "source": "scraped_monzo"
+  },
+  {
+    "date": "2026-05-21",
+    "timestamp": 1779368273.561414,
+    "street_rate_bob": 10.06,
+    "official_usd_bob": 6.86,
+    "street_premium_pct": 46.65,
+    "source": "scraped_monzo"
   }
 ]
