@@ -6,11 +6,55 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  function getGaSessionTraceId() {
+    try {
+      var key = 'ga_session_trace_id';
+      var id = sessionStorage.getItem(key);
+      if (!id) {
+        var randomPart = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : Math.random().toString(36).slice(2);
+        id = ('s_' + Date.now().toString(36) + '_' + randomPart).slice(0, 64);
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    } catch (e) {
+      return 'session_storage_unavailable';
+    }
+  }
+  function getGaReferrerContext() {
+    if (!document.referrer) return { referrer_type: 'none', referrer_host: 'none' };
+    try {
+      var referrerUrl = new URL(document.referrer);
+      return {
+        referrer_type: referrerUrl.hostname === window.location.hostname ? 'internal' : 'external',
+        referrer_host: referrerUrl.hostname || 'unknown'
+      };
+    } catch (e) {
+      return { referrer_type: 'invalid', referrer_host: 'invalid' };
+    }
+  }
+  function getGaTrafficDiagnostics() {
+    var params = new URLSearchParams(window.location.search);
+    var referrer = getGaReferrerContext();
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    return {
+      session_trace_id: getGaSessionTraceId(),
+      session_landing_path: window.location.pathname || '/',
+      referrer_type: referrer.referrer_type,
+      referrer_host: referrer.referrer_host,
+      has_utm: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].some(function(key) { return params.has(key); }) ? 'true' : 'false',
+      utm_source_debug: (params.get('utm_source') || 'none').slice(0, 64),
+      utm_medium_debug: (params.get('utm_medium') || 'none').slice(0, 64),
+      navigation_type: (navEntry && navEntry.type) || 'unknown',
+      timezone_offset_minutes: String(new Date().getTimezoneOffset()),
+      automation_hint: navigator.webdriver ? 'webdriver' : 'none'
+    };
+  }
   gtag('js', new Date());
 
   gtag('config', 'G-23L5YSC546', {
     page_path: window.location.pathname,
-    page_location: window.location.origin + window.location.pathname
+    page_location: window.location.origin + window.location.pathname,
+    ...getGaTrafficDiagnostics()
   });
 </script>
 <meta charset="utf-8"/>
@@ -18,7 +62,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Bolivien Wechselkurs Heute: Blue Dollar vs Offizieller BOB</title>
 <meta name="description" content="Vergleichen Sie heute Boliviens Blue-Dollar-Kurs, offiziellen BOB-Kurs, Kartenzahlung und Transfer-Apps. Täglich aktualisiert.">
-<meta name="revised" content="Freitag, 17. Juli 2026" />
+<meta name="revised" content="Samstag, 18. Juli 2026" />
 <link rel="canonical" href="https://boliviatravelmoney.site/de/" />
 <meta property="og:title" content="Bolivien Wechselkurs Heute" />
 <meta property="og:description" content="Vergleichen Sie Blue Dollar, offiziellen BOB-Kurs, Karten und Apps vor dem Bezahlen in Bolivien." />
@@ -37,7 +81,7 @@
   "@type": "WebApplication",
   "name": "Bolivien Wechselkurs Heute: Blue Dollar vs Offizieller BOB",
   "applicationCategory": "FinanceApplication",
-  "dateModified": "2026-07-17T12:58:44.339935+00:00",
+  "dateModified": "2026-07-18T10:36:08.325097+01:00",
   "operatingSystem": "Web",
   "description": "Vergleichen Sie heute Boliviens Blue-Dollar-Kurs, offiziellen BOB-Kurs, Kartenzahlung und Transfer-Apps. T\u00e4glich aktualisiert."
 }
@@ -289,7 +333,7 @@
     <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">📊 Aktuelle Blue Dollar & Offizielle Kurse</h2>
     <div id="last-updated" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-1">
         <svg class="w-[14px] h-[14px]" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z"/></svg>
-        <span>Aktualisiert: 17. Jul 2026</span>
+        <span>Aktualisiert: 18. Jul 2026</span>
     </div>
 
     <!-- Cash Rates -->

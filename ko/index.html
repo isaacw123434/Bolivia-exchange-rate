@@ -6,11 +6,55 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  function getGaSessionTraceId() {
+    try {
+      var key = 'ga_session_trace_id';
+      var id = sessionStorage.getItem(key);
+      if (!id) {
+        var randomPart = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : Math.random().toString(36).slice(2);
+        id = ('s_' + Date.now().toString(36) + '_' + randomPart).slice(0, 64);
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    } catch (e) {
+      return 'session_storage_unavailable';
+    }
+  }
+  function getGaReferrerContext() {
+    if (!document.referrer) return { referrer_type: 'none', referrer_host: 'none' };
+    try {
+      var referrerUrl = new URL(document.referrer);
+      return {
+        referrer_type: referrerUrl.hostname === window.location.hostname ? 'internal' : 'external',
+        referrer_host: referrerUrl.hostname || 'unknown'
+      };
+    } catch (e) {
+      return { referrer_type: 'invalid', referrer_host: 'invalid' };
+    }
+  }
+  function getGaTrafficDiagnostics() {
+    var params = new URLSearchParams(window.location.search);
+    var referrer = getGaReferrerContext();
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    return {
+      session_trace_id: getGaSessionTraceId(),
+      session_landing_path: window.location.pathname || '/',
+      referrer_type: referrer.referrer_type,
+      referrer_host: referrer.referrer_host,
+      has_utm: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].some(function(key) { return params.has(key); }) ? 'true' : 'false',
+      utm_source_debug: (params.get('utm_source') || 'none').slice(0, 64),
+      utm_medium_debug: (params.get('utm_medium') || 'none').slice(0, 64),
+      navigation_type: (navEntry && navEntry.type) || 'unknown',
+      timezone_offset_minutes: String(new Date().getTimezoneOffset()),
+      automation_hint: navigator.webdriver ? 'webdriver' : 'none'
+    };
+  }
   gtag('js', new Date());
 
   gtag('config', 'G-23L5YSC546', {
     page_path: window.location.pathname,
-    page_location: window.location.origin + window.location.pathname
+    page_location: window.location.origin + window.location.pathname,
+    ...getGaTrafficDiagnostics()
   });
 </script>
 <meta charset="utf-8"/>
@@ -18,7 +62,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>볼리비아 환율 오늘: 블루 달러 vs 공식 BOB 계산기</title>
 <meta name="description" content="오늘의 볼리비아 블루 달러 환율, 공식 BOB 환율, 카드 및 송금 앱 비용을 비교하세요. 여행자를 위해 매일 업데이트됩니다.">
-<meta name="revised" content="2026년 7월 17일 금요일" />
+<meta name="revised" content="2026년 7월 18일 토요일" />
 <link rel="canonical" href="https://boliviatravelmoney.site/ko/" />
 <meta property="og:title" content="볼리비아 환율 오늘" />
 <meta property="og:description" content="볼리비아에서 결제하기 전 블루 달러, 공식 BOB, 카드, 송금 앱 비용을 비교하세요." />
@@ -37,7 +81,7 @@
   "@type": "WebApplication",
   "name": "\ubcfc\ub9ac\ube44\uc544 \ud658\uc728 \uc624\ub298: \ube14\ub8e8 \ub2ec\ub7ec vs \uacf5\uc2dd BOB \uacc4\uc0b0\uae30",
   "applicationCategory": "FinanceApplication",
-  "dateModified": "2026-07-17T12:58:44.339935+00:00",
+  "dateModified": "2026-07-18T10:36:08.325097+01:00",
   "operatingSystem": "Web",
   "description": "\uc624\ub298\uc758 \ubcfc\ub9ac\ube44\uc544 \ube14\ub8e8 \ub2ec\ub7ec \ud658\uc728, \uacf5\uc2dd BOB \ud658\uc728, \uce74\ub4dc \ubc0f \uc1a1\uae08 \uc571 \ube44\uc6a9\uc744 \ube44\uad50\ud558\uc138\uc694. \uc5ec\ud589\uc790\ub97c \uc704\ud574 \ub9e4\uc77c \uc5c5\ub370\uc774\ud2b8\ub429\ub2c8\ub2e4."
 }
@@ -289,7 +333,7 @@
     <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4">📊 현재 블루 달러 및 공식 환율</h2>
     <div id="last-updated" class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-4 flex items-center gap-1">
         <svg class="w-[14px] h-[14px]" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="M483-120q-75 0-141-28.5T226.5-226q-49.5-49-78-115T120-482q0-75 28.5-140t78-113.5Q276-784 342-812t141-28q80 0 151.5 35T758-709v-106h60v208H609v-60h105q-44-51-103.5-82T483-780q-125 0-214 85.5T180-485q0 127 88 216t215 89q125 0 211-88t86-213h60q0 150-104 255.5T483-120Zm122-197L451-469v-214h60v189l137 134-43 43Z"/></svg>
-        <span>업데이트: 2026년 7월 17일</span>
+        <span>업데이트: 2026년 7월 18일</span>
     </div>
 
     <!-- Cash Rates -->

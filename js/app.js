@@ -73,6 +73,59 @@ const COLOR_MAP = {
     card: { bg: 'bg-green-50', bgDark: 'dark:bg-green-900/20', border: 'border-green-500', bgSolid: 'bg-green-500', text: 'text-green-600' }
 };
 
+function getSessionTraceId() {
+    const key = 'ga_session_trace_id';
+    try {
+        let id = sessionStorage.getItem(key);
+        if (!id) {
+            const randomPart = window.crypto?.randomUUID?.() || Math.random().toString(36).slice(2);
+            id = `s_${Date.now().toString(36)}_${randomPart}`.slice(0, 64);
+            sessionStorage.setItem(key, id);
+        }
+        return id;
+    } catch {
+        return 'session_storage_unavailable';
+    }
+}
+
+function getReferrerContext() {
+    if (!document.referrer) {
+        return { referrer_type: 'none', referrer_host: 'none' };
+    }
+
+    try {
+        const referrerUrl = new URL(document.referrer);
+        return {
+            referrer_type: referrerUrl.hostname === window.location.hostname ? 'internal' : 'external',
+            referrer_host: referrerUrl.hostname || 'unknown'
+        };
+    } catch {
+        return { referrer_type: 'invalid', referrer_host: 'invalid' };
+    }
+}
+
+function getTrafficDiagnostics() {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source') || '';
+    const utmMedium = params.get('utm_medium') || '';
+    const hasUtm = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].some((key) => params.has(key));
+    const referrer = getReferrerContext();
+    const navEntry = performance.getEntriesByType?.('navigation')?.[0];
+
+    return {
+        session_trace_id: getSessionTraceId(),
+        session_landing_path: window.location.pathname || '/',
+        referrer_type: referrer.referrer_type,
+        referrer_host: referrer.referrer_host,
+        has_utm: hasUtm ? 'true' : 'false',
+        utm_source_debug: utmSource.slice(0, 64) || 'none',
+        utm_medium_debug: utmMedium.slice(0, 64) || 'none',
+        navigation_type: navEntry?.type || 'unknown',
+        timezone_offset_minutes: String(new Date().getTimezoneOffset()),
+        automation_hint: navigator.webdriver ? 'webdriver' : 'none'
+    };
+}
+
 function getIconSvg(name, classes = "w-6 h-6") {
     if (!ICON_PATHS[name]) return '';
     return `<svg class="${classes}" fill="currentColor" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"><path d="${ICON_PATHS[name]}"/></svg>`;
@@ -84,6 +137,7 @@ function trackEvent(eventName, params = {}) {
         language: currentLang,
         home_currency: state.homeCurrency,
         bill_currency: state.billCurrency,
+        ...getTrafficDiagnostics(),
         ...params
     });
 }
@@ -222,6 +276,9 @@ async function init() {
     initCurrency();
     setupEventListeners();
     updateToggleUI(); // Initialize UI state
+    trackOnce('traffic_diagnostics', 'traffic_diagnostics', {
+        preferred_language_saved: localStorage.getItem('preferred-lang') ? 'true' : 'false'
+    });
 
     // Try to load from cache first for instant UI
     if (loadCachedRates()) {
