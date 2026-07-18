@@ -1,6 +1,62 @@
 <!DOCTYPE html>
 <html class="light" lang="en" >
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-23L5YSC546"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function getGaSessionTraceId() {
+    try {
+      var key = 'ga_session_trace_id';
+      var id = sessionStorage.getItem(key);
+      if (!id) {
+        var randomPart = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : Math.random().toString(36).slice(2);
+        id = ('s_' + Date.now().toString(36) + '_' + randomPart).slice(0, 64);
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    } catch (e) {
+      return 'session_storage_unavailable';
+    }
+  }
+  function getGaReferrerContext() {
+    if (!document.referrer) return { referrer_type: 'none', referrer_host: 'none' };
+    try {
+      var referrerUrl = new URL(document.referrer);
+      return {
+        referrer_type: referrerUrl.hostname === window.location.hostname ? 'internal' : 'external',
+        referrer_host: referrerUrl.hostname || 'unknown'
+      };
+    } catch (e) {
+      return { referrer_type: 'invalid', referrer_host: 'invalid' };
+    }
+  }
+  function getGaTrafficDiagnostics() {
+    var params = new URLSearchParams(window.location.search);
+    var referrer = getGaReferrerContext();
+    var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    return {
+      session_trace_id: getGaSessionTraceId(),
+      session_landing_path: window.location.pathname || '/',
+      referrer_type: referrer.referrer_type,
+      referrer_host: referrer.referrer_host,
+      has_utm: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].some(function(key) { return params.has(key); }) ? 'true' : 'false',
+      utm_source_debug: (params.get('utm_source') || 'none').slice(0, 64),
+      utm_medium_debug: (params.get('utm_medium') || 'none').slice(0, 64),
+      navigation_type: (navEntry && navEntry.type) || 'unknown',
+      timezone_offset_minutes: String(new Date().getTimezoneOffset()),
+      automation_hint: navigator.webdriver ? 'webdriver' : 'none'
+    };
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'G-23L5YSC546', {
+    page_path: window.location.pathname,
+    page_location: window.location.origin + window.location.pathname,
+    ...getGaTrafficDiagnostics()
+  });
+</script>
 <meta charset="utf-8"/>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.google-analytics.com https://analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -46,7 +102,7 @@
   "@type": "Dataset",
   "name": "Bolivia Blue Dollar Rate History",
   "description": "Daily Bolivia blue dollar and official USD to BOB exchange-rate history from committed site data.",
-  "dateModified": "2026-07-18T10:36:08.325097+01:00",
+  "dateModified": "2026-07-18T10:38:57.115132+01:00",
   "url": "https://boliviatravelmoney.site/history/"
 }
 </script>
